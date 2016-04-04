@@ -1,0 +1,2 @@
+# paprikachips
+Heuristieken chips probleem
