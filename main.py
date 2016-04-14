@@ -5,6 +5,6 @@
 
 class Layer(object):
     def __init__(self):
-        print "Hallo"
+        print "Hallo, wereld"
 
 chip = Layer()
