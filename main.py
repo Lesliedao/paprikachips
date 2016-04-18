@@ -63,9 +63,6 @@ def manhattan(x, y):
 wire_length = 0
 
 for i in netlist_1:
-	new_length = manhattan(i[0]+1, i[1]+1)
-	wire_length = wire_length + new_length
-
-
+	wire_length += manhattan(i[0]+1, i[1]+1)
 
 print wire_length
