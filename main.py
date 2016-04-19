@@ -11,7 +11,7 @@ class Layer(object):
 
 chip = Layer()
 
-grid = [
+grid1 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 4, 0, 0],
     [0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 7, 0, 0, 0],
@@ -35,7 +35,7 @@ netlist_1 = [(23, 4), (5, 7), (1, 0), (15, 21), (3, 5), (7, 13), (3, 23), (23, 8
 # ]
 
 # Bereken de manhattan distance
-def manhattan(x, y):
+def manhattan(x, y, grid):
     # Zoek de coordinaten van x
     for i in xrange(len(grid)):
         if x in grid[i]:
@@ -63,6 +63,6 @@ def manhattan(x, y):
 wire_length = 0
 
 for i in netlist_1:
-	wire_length += manhattan(i[0]+1, i[1]+1)
+	wire_length += manhattan(i[0]+1, i[1]+1, grid1)
 
 print wire_length
