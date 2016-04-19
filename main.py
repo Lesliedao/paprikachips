@@ -1,19 +1,36 @@
 ##
 # Chips & Circuits
 # Team Paprikachips
-# Programma om de ondergrens van de grids te bepalen
+# Programma om de ondergrens te berekenen.
 ##
 
 import math
 
+class Chip(object):
+    def __init__(self):
+        print "hallo"
+
 class Layer(object):
     def __init__(self):
-        print "Hallo, wereld"
+        print "Hello, world!"
 
-chip = Layer()
+#TODO: collision detection
+class Wire(object):
+    def __init__(self):
+        self.path = []
+    def addNode(self, node):
+        self.path.append(node)
 
-# Gatelayout definieren
-# Gatelayout 1 (Print 1)
+#TODO: klasse voor elk van de algoritmes
+
+thread = Thread()
+print tread.path
+thread.addNode(5)
+thread.addNode(4)
+print thread.path
+
+
+# De layout van grid 1.
 grid1 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 1, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 4, 0, 0],
@@ -30,7 +47,7 @@ grid1 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
 
-# Netlists
+# Lists met de nodes die met elkaar verbonden moeten worden.
 netlist_1 = [(23, 4), (5, 7), (1, 0), (15, 21), (3, 5), (7, 13), (3, 23), (23, 8), (22, 13), (15, 17), (20, 10), (15, 8), (13, 18), (19, 2), (22, 11), (10, 4), (11, 24), (3, 15), (2, 20), (3, 4), (20, 19), (16, 9), (19, 5), (3, 0), (15, 5), (6, 14), (7, 9), (9, 13), (22, 16), (10, 7)]
 
 # wires = [
@@ -38,9 +55,9 @@ netlist_1 = [(23, 4), (5, 7), (1, 0), (15, 21), (3, 5), (7, 13), (3, 23), (23, 8
 #     []
 # ]
 
-# Bereken de manhattan distance
+# Functie voor het berekenen van de manhattan distance.
 def manhattan(x, y, grid):
-    # Zoek de coordinaten van x
+    # Vindt de coordinaten van x.
     for i in xrange(len(grid)):
         if x in grid[i]:
             x1 = i
@@ -51,7 +68,7 @@ def manhattan(x, y, grid):
             x2 = i
             break
 
-    # Zoek de coordinaten van y
+    # Vindt de coordinaten van y.
     for i in xrange(len(grid)):
         if y in grid[i]:
             y1 = i
@@ -64,7 +81,7 @@ def manhattan(x, y, grid):
 
     return math.fabs(x1 - y1) + math.fabs(x2 - y2)
 
-# Bereken de ondergrens voor netlist 1
+# Berekenen van de ondergrens met behulp van de manhattan distance.
 wire_length = 0
 
 for i in netlist_1:
