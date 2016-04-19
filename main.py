@@ -1,18 +1,34 @@
 ##
 # Chips & Circuits
 # Team Paprikachips
-# Programma om de ondergrens van de grids te bepalen
 ##
 
 import math
+
+class Chip(object):
+    def __init__(self):
+        print "hallo"
 
 class Layer(object):
     def __init__(self):
         print "Hallo, wereld"
 
-chip = Layer()
+#TODO: collision detection
+class Wire(object):
+    def __init__(self):
+        self.path = []
+    def addNode(self, node):
+        self.path.append(node)
 
-# Gatelayout definieren
+#TODO: klasse voor elk van de algoritmes
+
+draad = Draad()
+print draad.path
+draad.addNode(5)
+draad.addNode(4)
+print draad.path
+
+# Define gate layout
 # Gatelayout 1 (Print 1)
 grid1 = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -38,9 +54,9 @@ netlist_1 = [(23, 4), (5, 7), (1, 0), (15, 21), (3, 5), (7, 13), (3, 23), (23, 8
 #     []
 # ]
 
-# Bereken de manhattan distance
+# Calculate manhattan distance
 def manhattan(x, y, grid):
-    # Zoek de coordinaten van x
+    # Find the coordinates of x
     for i in xrange(len(grid)):
         if x in grid[i]:
             x1 = i
@@ -51,7 +67,7 @@ def manhattan(x, y, grid):
             x2 = i
             break
 
-    # Zoek de coordinaten van y
+    # Find the coordinates of y
     for i in xrange(len(grid)):
         if y in grid[i]:
             y1 = i
@@ -64,7 +80,7 @@ def manhattan(x, y, grid):
 
     return math.fabs(x1 - y1) + math.fabs(x2 - y2)
 
-# Bereken de ondergrens voor netlist 1
+# Calculate lower bound for netlist 1
 wire_length = 0
 
 for i in netlist_1:
