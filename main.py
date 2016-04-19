@@ -7,12 +7,17 @@
 import math
 
 class Chip(object):
-    def __init__(self):
-        print "hallo"
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.layers = []
+        self.layers.append(self.addLayer(self.width, self.height))
+    def addLayer(self, width, height):
+        return Layer(width, height)
 
 class Layer(object):
-    def __init__(self):
-        print "Hello, world!"
+    def __init__(self, width, height):
+        self.grid = [[0 for x in range(width)] for x in range(height)]
 
 #TODO: collision detection
 class Wire(object):
@@ -23,8 +28,8 @@ class Wire(object):
 
 #TODO: klasse voor elk van de algoritmes
 
-thread = Thread()
-print tread.path
+thread = Wire()
+print thread.path
 thread.addNode(5)
 thread.addNode(4)
 print thread.path
