@@ -11,13 +11,25 @@ class Chip(object):
         self.width = width
         self.height = height
         self.layers = []
-        self.layers.append(self.addLayer(self.width, self.height))
-    def addLayer(self, width, height):
-        return Layer(width, height)
+        self.addLayer()
+    def newLayer(self):
+        return Layer(self.width, self.height)
+    def addLayer(self):
+        self.layers.append(self.newLayer())
+    def addGate(self, gate, x, y):
+        self.layers[0].grid[x][y] = gate
 
 class Layer(object):
     def __init__(self, width, height):
         self.grid = [[0 for x in range(width)] for x in range(height)]
+    def printGrid(self):
+        for row in self.grid:
+            print row
+
+chip1 = Chip(18, 13)
+chip1.addGate(1, 1, 1)
+for layer in chip1.layers:
+    layer.printGrid()
 
 #TODO: collision detection
 class Wire(object):
@@ -27,6 +39,17 @@ class Wire(object):
         self.path.append(node)
 
 #TODO: klasse voor elk van de algoritmes
+class Dijkstra(object):
+    def __init__(self):
+        pass
+
+class Lee(object):
+    def __init__(self):
+        pass
+
+class Astar(object):
+    def __init__(self):
+        pass
 
 thread = Wire()
 print thread.path
