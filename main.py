@@ -1,6 +1,7 @@
 ##
 # Chips & Circuits
 # Team Paprikachips
+# Programma om de ondergrens van de grids te bepalen
 ##
 
 import math
