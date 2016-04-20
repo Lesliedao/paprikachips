@@ -39,49 +39,54 @@ while not exit:
     # Zet de achtergrond van de visualisatie op wit.
     screen.fill(WHITE)
 
-    def makegrid(blocks_x, blocks_y):
+    # Maakt de verschillende teksten op het scherm aan. 
+    font_title = pygame.font.SysFont('Helvetica', 30, True, False)
+    font_other = pygame.font.SysFont('Helvetica', 20, True, False)
+    text_title = font_title.render("Chips and circuits: Grids", True, BLACK)
+    text_next = font_other.render("Next layer", True, BLACK)
+    text_prev = font_other.render("Previous layer", True, BLACK)
+
+    def make_grid(blocks_x, blocks_y, node_list):
         line_length_hor = blocks_x * 15
         line_length_vert = blocks_y * 15
         line_counter = 0
 
-        # Bepalen van de start en eindpunten van de lijnen.
-        pointx = (screenwidth - line_length_hor) / 2 # 65
-        startpointy = (screenlength - line_length_vert) / 2 # 152,5
-        endpointy = screenlength - startpointy # 347,5
+        # Bepalen van de banners rond de grid.
+        banner_left = (screenwidth - line_length_hor) / 2 # 65
+        banner_right = screenwidth - banner_left # 335
+        banner_top = (screenlength - line_length_vert) / 2 # 152,5
+        banner_bottom = screenlength - banner_top # 347,5
 
         # While loop voor de lijnen op de x-as, dus de verticale lijnen.
+        x_start = banner_left
         while line_counter != (blocks_x + 1):
-            pygame.draw.line(screen, BLACK, [pointx, startpointy], [pointx, endpointy])
-            pointx = pointx + 15
+            pygame.draw.line(screen, BLACK, [x_start, banner_top], [x_start, banner_bottom])
+            x_start = x_start + 15
             line_counter = line_counter + 1
-
-
-        line_counter = 0
-
-        # Bepalen van de start en eindpunten van de lijnen.
-        pointy = (screenlength - line_length_vert) / 2 # 152,5
-        startpointx = (screenwidth - line_length_hor) / 2 # 65
-        endpointx = screenwidth - startpointx # 335
 
         # While loop voor de lijnen op de y-as, dus de horizontale lijnen.
+        line_counter = 0
+        y_start = banner_top
         while line_counter != (blocks_y + 1):
-            pygame.draw.line(screen, BLACK, [startpointx, pointy], [endpointx, pointy])
-            pointy = pointy + 15
+            pygame.draw.line(screen, BLACK, [banner_left, y_start], [banner_right, y_start])
+            y_start = y_start + 15
             line_counter = line_counter + 1
 
+        # Zet de verschillende texten op de juiste plek (MOET NOG AAN GRID WORDEN AANGEPAST).
+        screen.blit(text_title, [20, (banner_top - 50)])
+        screen.blit(text_next, [65, (banner_top + line_length_vert + 20)])
+        screen.blit(text_prev, [(screenwidth - 195), (banner_top + line_length_vert + 20)])
+
+        # Zet de nodes op de grid.
+        for i in node_list:
+            pygame.draw.circle(screen, RED, (int(banner_left + (i[2] * 15)), int(banner_top+ (i[1] * 15))), 5, 0)
+   
+
     # Maakt het daadwerkelijke grid met het meegegeven aantal blokjes.
-    makegrid(18, 13)
- 
-    # Maakt de verschillende teksten op het scherm aan. 
-    font = pygame.font.SysFont('Helvetica', 25, True, False)
-    text = font.render("Chips and circuits: Grid 1", True, BLACK)
-    text_next = font.render("Next layer", True, BLACK)
-    text_prev = font.render("Previous layer", True, BLACK)
- 
-    # Zet de verschillende texten op de juiste plek (MOET NOG AAN GRID WORDEN AANGEPAST).
-    screen.blit(text, [50, 50])
-    screen.blit(text_next, [50, 300])
-    screen.blit(text_prev, [190, 300])
+    #make_grid(17, 12, grid1)
+    make_grid(17, 16, grid2)
+    
+    # Geeft de images weer op het scherm.
     pygame.display.flip()
  
     # Iets om later zorgen over te maken (limits the while loop to a max of 60 times per second).
