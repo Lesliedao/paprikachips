@@ -2,6 +2,7 @@
 # Chips & Circuits
 # Team Paprikachips
 # Programma om de data te visualiseren.
+# Werkt met python 3. Om te runnen, gebruik: python3 ./pygame_ex.py
 ##
  
 import pygame
@@ -30,7 +31,7 @@ exit = False
 clock = pygame.time.Clock()
 while not exit:
  
-    # Zorgt ervoor dat de loop stopt als de gebruiker het scherm afsluit
+    # Zorgt ervoor dat de loop stopt als de gebruiker het scherm afsluit.
     for event in pygame.event.get(): 
         if event.type == pygame.QUIT: 
             exit = True  
