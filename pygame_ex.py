@@ -5,6 +5,7 @@
 ##
  
 import pygame
+from grid_info import *
  
 # De game engine initialiseren. 
 pygame.init()
