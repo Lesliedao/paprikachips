@@ -29,11 +29,11 @@ class Layer(object):
 
 #TODO: collision detection
 class Wire(object):
-    def __init__(self):
+    def __init__(self, x, y, z):
         self.path = []
     def addNode(self, node):
         self.path.append(node)
-
+ 
 #TODO: klasse voor elk van de algoritmes
 class Dijkstra(object):
     def __init__(self):
