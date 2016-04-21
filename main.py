@@ -19,15 +19,19 @@ class Chip(object):
         self.width = width
         self.height = height
         self.wires = []
+        self.obstacles = []
     # Start een nieuw draad.
     def add_new_wire(self, x, y, z = 0):
         self.wires.append(Wire(x, y, z))
+        self.obstacles.append((x, y, z))
     # Voeg een segment aan een bestaande draad toe.
     def add_wire_segment(self, x, y, z = 0, wire_index = -1):
         self.wires[wire_index].extend_wire(x, y, z)
+        self.obstacles.append((x, y, z))
     # Functie om de gates aan de chip toe te voegen.
     def add_gate(self, gate, x, y, z = 0):
         self.layers[z][y][x] = gate
+        self.obstacles.append((x, y, z))
     # Functie om alle lagen te laten printen.
     def print_grid(self):
         for i in range(len(self.layers)):
