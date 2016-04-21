@@ -155,6 +155,24 @@ print "Ondergrens netlist 2: %d" % wire_length
 
 # Ondergrens netlist 3
 wire_length = 0
-for i in netlist_1:
+for i in netlist_3:
     wire_length += manhattan(i[0]+1, i[1]+1, chip1.layers[0].grid)
 print "Ondergrens netlist 3: %d" % wire_length
+
+# Ondergrens netlist 4
+wire_length = 0
+for i in netlist_4:
+    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0].grid)
+print "Ondergrens netlist 4: %d" % wire_length
+
+# Ondergrens netlist 5
+wire_length = 0
+for i in netlist_5:
+    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0].grid)
+print "Ondergrens netlist 5: %d" % wire_length
+
+# Ondergrens netlist 6
+wire_length = 0
+for i in netlist_6:
+    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0].grid)
+print "Ondergrens netlist 6: %d" % wire_length
