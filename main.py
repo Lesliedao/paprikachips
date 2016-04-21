@@ -42,9 +42,18 @@ class Chip(object):
     def print_wires(self):
         for wire in self.wires:
             print wire.path
-    # TODO: implementeer collision detection voor de draden
-    def detect_collision(self):
-        pass
+    def print_obstacles(self):
+        print self.obstacles
+    # Bekijk of een draad een gate of een andere draad snijdt.
+    def detect_collision(self, x, y, z):
+        if (x, y, z) in self.obstacles:
+            return True
+        return False
+    def connect_gates(self, x1, y1, z1, x2, y2, z2):
+        start = (x1, y1, z1)
+        goal = (x2, y2, z2)
+        # TODO: algoritme bepaalt stuk voor stuk waar elk draad komt
+        # Als het volgende stuk draad de rest met goal verbindt, check dan niet op collision
 
 # Wire houdt een list path bij met coordinaten waar het draad loopt.
 class Wire(object):
@@ -72,15 +81,17 @@ class Astar(object):
 chip1 = Chip(18, 13)
 for gateloc in grid1:
     chip1.add_gate(gateloc[0], gateloc[1], gateloc[2])
-chip1.print_grid()
-print ""
+# chip1.print_grid()
+# chip1.print_obstacles()
+# print ""
 
 # Chip 2 definieren
 chip2 = Chip(18, 17)
 for gateloc in grid2:
     chip2.add_gate(gateloc[0], gateloc[1], gateloc[2])
-chip2.print_grid()
-print ""
+# chip2.print_grid()
+# chip2.print_obstacles()
+# print ""
 
 # Functie voor het berekenen van de manhattan distance.
 def manhattan(x, y, grid):
@@ -115,7 +126,7 @@ def manhattan(x, y, grid):
 # chip3.add_wire_segment(4, 1)
 # chip3.add_wire_segment(5, 1)
 # chip3.add_wire_segment(6, 1)
-# chip3.print_wires()
+# chip3.print_obstacles()
 
 # Berekenen van de ondergrens met behulp van de manhattan distance.
 # Ondergrens netlist 1
