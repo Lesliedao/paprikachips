@@ -31,8 +31,9 @@ class Layer(object):
 class Wire(object):
     def __init__(self, x, y, z):
         self.path = []
-    def addNode(self, node):
-        self.path.append(node)
+    def addWire(self, x, y, z):
+        coordinates = (x, y, z)
+        self.path.append(coordinates)
  
 #TODO: klasse voor elk van de algoritmes
 class Dijkstra(object):
