@@ -7,8 +7,6 @@
 
 import math
 
-max_layers = 7
-
 class Chip(object):
     def __init__(self, width, height):
         self.maxlayers = 7
@@ -23,17 +21,21 @@ class Chip(object):
     def add_gate(self, gate, x, y, z = 0): # 0 later weg.
         self.layers[z][y][x] = gate
     def print_grid(self):
-        for row in self.grid:
+        for row in self.layers[0]:
             print row
+    def print_wires(self):
+        for wire in self.wires:
+            print wire.path
     def detect_collision(self):
         pass
+
 class Wire(object):
     def __init__(self, x, y, z):
         self.path = []
         self.path.append((x, y, z))
     def extend_wire(self, x, y, z):
         self.path.append((x, y, z))
- 
+
 #TODO: klasse voor elk van de algoritmes
 class Dijkstra(object):
     def __init__(self):
@@ -63,16 +65,15 @@ grid2 = [(1, 1, 1), (2, 6, 1), (3, 10, 1), (4, 15, 1), (5, 3, 2), (6, 12, 2), (7
 chip1 = Chip(18, 13)
 for gateloc in grid1:
     chip1.add_gate(gateloc[0], gateloc[1], gateloc[2])
-# for layer in chip1.layers:
-#     layer.printGrid()
-
+chip1.print_grid()
 print ""
+
 # Chip 2 definieren
 chip2 = Chip(18, 17)
 for gateloc in grid2:
     chip2.add_gate(gateloc[0], gateloc[1], gateloc[2])
-# for layer in chip2.layers:
-#     layer.printGrid()
+chip2.print_grid()
+print ""
 
 # Lists met de nodes die met elkaar verbonden moeten worden.
 # Chip 1
@@ -146,7 +147,7 @@ chip3.add_wire_segment(3, 1)
 chip3.add_wire_segment(4, 1)
 chip3.add_wire_segment(5, 1)
 chip3.add_wire_segment(6, 1)
-print chip3.wires[0].path
+chip3.print_wires()
 
 # Berekenen van de ondergrens met behulp van de manhattan distance.
 # Ondergrens netlist 1
