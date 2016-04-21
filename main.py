@@ -9,9 +9,10 @@ import math
 
 class Chip(object):
     def __init__(self, width, height):
+        self.maxlayers = 7
+        self.layers = [[[0 for x in range(width)] for x in range(height)] for x in range (self.maxlayers)]
         self.width = width
         self.height = height
-        self.layers = []
         self.addLayer()
     def newLayer(self):
         return Layer(self.width, self.height)
@@ -19,10 +20,6 @@ class Chip(object):
         self.layers.append(self.newLayer())
     def addGate(self, gate, x, y, z = 0):
         self.layers[z].grid[y][x] = gate
-
-class Layer(object):
-    def __init__(self, width, height):
-        self.grid = [[0 for x in range(width)] for x in range(height)]
     def printGrid(self):
         for row in self.grid:
             print row
