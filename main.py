@@ -7,6 +7,8 @@
 
 import math
 
+max_layers = 7
+
 class Chip(object):
     def __init__(self, width, height):
         self.maxlayers = 7
@@ -28,8 +30,9 @@ class Chip(object):
 class Wire(object):
     def __init__(self, x, y, z):
         self.path = []
-    def addNode(self, node):
-        self.path.append(node)
+    def addWire(self, x, y, z):
+        self.coordinates = (x, y, z)
+        self.path.append(coordinates)
  
 #TODO: klasse voor elk van de algoritmes
 class Dijkstra(object):
