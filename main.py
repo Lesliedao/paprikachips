@@ -15,24 +15,24 @@ class Chip(object):
         self.layers = [[[0 for x in range(width)] for x in range(height)] for x in range (self.maxlayers)]
         self.width = width
         self.height = height
-        self.addLayer()
-    def newLayer(self):
-        return Layer(self.width, self.height)
-    def addLayer(self):
-        self.layers.append(self.newLayer())
-    def addGate(self, gate, x, y, z = 0):
-        self.layers[z].grid[y][x] = gate
-    def printGrid(self):
+        self.wires = []
+    def add_new_wire(self, x, y, z = 0):
+        self.wires.append(Wire(x, y, z))
+    def add_wire_segment(self, x, y, z = 0, wire_index = -1):
+        self.wires[wire_index].extend_wire(x, y, z)
+    def add_gate(self, gate, x, y, z = 0): # 0 later weg.
+        self.layers[z][y][x] = gate
+    def print_grid(self):
         for row in self.grid:
             print row
-
-#TODO: collision detection
+    def detect_collision(self):
+        pass
 class Wire(object):
     def __init__(self, x, y, z):
         self.path = []
-    def addWire(self, x, y, z):
-        self.coordinates = (x, y, z)
-        self.path.append(coordinates)
+        self.path.append((x, y, z))
+    def extend_wire(self, x, y, z):
+        self.path.append((x, y, z))
  
 #TODO: klasse voor elk van de algoritmes
 class Dijkstra(object):
@@ -62,17 +62,17 @@ grid2 = [(1, 1, 1), (2, 6, 1), (3, 10, 1), (4, 15, 1), (5, 3, 2), (6, 12, 2), (7
 # Chip 1 definieren
 chip1 = Chip(18, 13)
 for gateloc in grid1:
-    chip1.addGate(gateloc[0], gateloc[1], gateloc[2])
-for layer in chip1.layers:
-    layer.printGrid()
+    chip1.add_gate(gateloc[0], gateloc[1], gateloc[2])
+# for layer in chip1.layers:
+#     layer.printGrid()
 
 print ""
 # Chip 2 definieren
 chip2 = Chip(18, 17)
 for gateloc in grid2:
-    chip2.addGate(gateloc[0], gateloc[1], gateloc[2])
-for layer in chip2.layers:
-    layer.printGrid()
+    chip2.add_gate(gateloc[0], gateloc[1], gateloc[2])
+# for layer in chip2.layers:
+#     layer.printGrid()
 
 # Lists met de nodes die met elkaar verbonden moeten worden.
 # Chip 1
@@ -139,39 +139,48 @@ def manhattan(x, y, grid):
 
     return math.fabs(x1 - y1) + math.fabs(x2 - y2)
 
+chip3 = Chip(18, 13)
+chip3.add_new_wire(1, 1)
+chip3.add_wire_segment(2, 1)
+chip3.add_wire_segment(3, 1)
+chip3.add_wire_segment(4, 1)
+chip3.add_wire_segment(5, 1)
+chip3.add_wire_segment(6, 1)
+print chip3.wires[0].path
+
 # Berekenen van de ondergrens met behulp van de manhattan distance.
 # Ondergrens netlist 1
 wire_length = 0
 for i in netlist_1:
-    wire_length += manhattan(i[0]+1, i[1]+1, chip1.layers[0].grid)
+    wire_length += manhattan(i[0]+1, i[1]+1, chip1.layers[0])
 print "Ondergrens netlist 1: %d" % wire_length
 
 # Ondergrens netlist 2
 wire_length = 0
 for i in netlist_2:
-    wire_length += manhattan(i[0]+1, i[1]+1, chip1.layers[0].grid)
+    wire_length += manhattan(i[0]+1, i[1]+1, chip1.layers[0])
 print "Ondergrens netlist 2: %d" % wire_length
 
 # Ondergrens netlist 3
 wire_length = 0
 for i in netlist_3:
-    wire_length += manhattan(i[0]+1, i[1]+1, chip1.layers[0].grid)
+    wire_length += manhattan(i[0]+1, i[1]+1, chip1.layers[0])
 print "Ondergrens netlist 3: %d" % wire_length
 
 # Ondergrens netlist 4
 wire_length = 0
 for i in netlist_4:
-    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0].grid)
+    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0])
 print "Ondergrens netlist 4: %d" % wire_length
 
 # Ondergrens netlist 5
 wire_length = 0
 for i in netlist_5:
-    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0].grid)
+    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0])
 print "Ondergrens netlist 5: %d" % wire_length
 
 # Ondergrens netlist 6
 wire_length = 0
 for i in netlist_6:
-    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0].grid)
+    wire_length += manhattan(i[0]+1, i[1]+1, chip2.layers[0])
 print "Ondergrens netlist 6: %d" % wire_length

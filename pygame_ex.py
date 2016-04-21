@@ -77,7 +77,7 @@ while not exit:
             y_start = y_start + block_size
             line_counter = line_counter + 1
 
-        # Zet de verschillende texten op de juiste plek (MOET NOG AAN GRID WORDEN AANGEPAST).
+        # Zet de verschillende texten op de juiste plek.
         screen.blit(text_title, [20, (banner_top - 50)])
         screen.blit(text_next, [65, (banner_top + line_length_vert + 20)])
         screen.blit(text_prev, [(screenwidth - 195), (banner_top + line_length_vert + 20)])
@@ -85,12 +85,12 @@ while not exit:
         # Zet de nodes met nummers op de grid.
         for i in node_list:
             node_number = font_grid.render("%d" %i[0], True, BLACK)
-            pygame.draw.circle(screen, RED, (int(banner_left + (i[2] * block_size)), int(banner_top+ (i[1] * block_size))), node_size, 0)
-            screen.blit(node_number, [int(banner_left + (i[2] * block_size)) - 4, int(banner_top+ (i[1] * block_size)) - 4])
+            pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top+ (i[2] * block_size))), node_size, 0)
+            screen.blit(node_number, [int(banner_left + (i[1] * block_size)) - 4, int(banner_top+ (i[2] * block_size)) - 4])
             
     # Maakt het daadwerkelijke grid met het meegegeven aantal blokjes.
-    make_grid(17, 12, grid1)
-    #make_grid(17, 16, grid2)
+    #make_grid(17, 12, grid1)
+    make_grid(17, 16, grid2)
     
     # Geeft de images weer op het scherm.
     pygame.display.flip()
