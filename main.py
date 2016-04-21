@@ -5,35 +5,49 @@
 # Programma om de ondergrens te berekenen.
 ##
 
+# Importeer math module.
 import math
+# Importeer de grids en netlists uit externe file grid_info.
 from grid_info import *
 
 class Chip(object):
+    # Houd het maximum aantal lagen, de lagen zelf, breedte en hoogte en de
+    # draden bij.
     def __init__(self, width, height):
         self.maxlayers = 7
         self.layers = [[[0 for x in range(width)] for x in range(height)] for x in range (self.maxlayers)]
         self.width = width
         self.height = height
         self.wires = []
+    # Start een nieuw draad.
     def add_new_wire(self, x, y, z = 0):
         self.wires.append(Wire(x, y, z))
+    # Voeg een segment aan een bestaande draad toe.
     def add_wire_segment(self, x, y, z = 0, wire_index = -1):
         self.wires[wire_index].extend_wire(x, y, z)
-    def add_gate(self, gate, x, y, z = 0): # 0 later weg.
+    # Functie om de gates aan de chip toe te voegen.
+    def add_gate(self, gate, x, y, z = 0):
         self.layers[z][y][x] = gate
+    # Functie om alle lagen te laten printen.
     def print_grid(self):
-        for row in self.layers[0]:
-            print row
+        for i in range(len(self.layers)):
+            print "Layer %d" % (i + 1)
+            for row in self.layers[i]:
+                print row
+    # Functie om alle draden op een chip te laten printen.
     def print_wires(self):
         for wire in self.wires:
             print wire.path
+    # TODO: implementeer collision detection voor de draden
     def detect_collision(self):
         pass
 
+# Wire houdt een list path bij met coordinaten waar het draad loopt.
 class Wire(object):
     def __init__(self, x, y, z):
         self.path = []
         self.path.append((x, y, z))
+    # Voeg een segment toe aan dit draad naar de coordinaten (x, y, z).
     def extend_wire(self, x, y, z):
         self.path.append((x, y, z))
 
@@ -90,14 +104,14 @@ def manhattan(x, y, grid):
 
     return math.fabs(x1 - y1) + math.fabs(x2 - y2)
 
-chip3 = Chip(18, 13)
-chip3.add_new_wire(1, 1)
-chip3.add_wire_segment(2, 1)
-chip3.add_wire_segment(3, 1)
-chip3.add_wire_segment(4, 1)
-chip3.add_wire_segment(5, 1)
-chip3.add_wire_segment(6, 1)
-chip3.print_wires()
+# chip3 = Chip(18, 13)
+# chip3.add_new_wire(1, 1)
+# chip3.add_wire_segment(2, 1)
+# chip3.add_wire_segment(3, 1)
+# chip3.add_wire_segment(4, 1)
+# chip3.add_wire_segment(5, 1)
+# chip3.add_wire_segment(6, 1)
+# chip3.print_wires()
 
 # Berekenen van de ondergrens met behulp van de manhattan distance.
 # Ondergrens netlist 1
