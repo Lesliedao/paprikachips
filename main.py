@@ -29,14 +29,12 @@ class Chip(object):
     # Start een nieuw draad.
     def add_new_wire(self, x, y, z = 0):
         self.wires.append(Wire(x, y, z))
-        self.obstacles.append((x, y, z))
     # Voeg een segment aan een bestaande draad toe.
     def add_wire_segment(self, x, y, z = 0, wire_index = -1):
         if self.detect_collision(x, y, z):
             print "Obstacle detected. Adding wire segment aborted."
         else:
             self.wires[wire_index].extend_wire(x, y, z)
-            self.obstacles.append((x, y, z))
     # Functie om de gates aan de chip toe te voegen.
     def add_gate(self, gate, x, y, z = 0):
         if self.detect_collision(x, y, z):
@@ -66,6 +64,9 @@ class Chip(object):
         goal = (x2, y2, z2)
         # TODO: algoritme bepaalt stuk voor stuk waar elk draad komt
         # Als het volgende stuk draad de rest met goal verbindt, check dan niet op collision
+        # TODO: voeg het pad pas aan obstacles toe als het hele pad af is
+        # for node in self.wires[-1].path:
+        #     self.obstacles.append(node)
 
 # Wire houdt een list path bij met coordinaten waar het draad loopt.
 class Wire(object):
