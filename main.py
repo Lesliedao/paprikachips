@@ -7,6 +7,7 @@
 
 import math
 from grid_info import *
+from Queue import PriorityQueue
 
 class Chip(object):
     def __init__(self, width, height):
@@ -47,7 +48,32 @@ class Lee(object):
         pass
 
 class Astar(object):
-    def __init__(self):
+    def __init__(self, value, parent, start = 0, goal = 0):
+        # List of all neighbouring possibilities (squares imediately next to the starting point)
+        self.children = []
+        # Store current parents
+        self.parent = parent
+        # Store current value
+        self.value = value
+        # This is just a placeholder
+        self.dist = 0
+        # Check if the parent is not 0
+        if parent:
+            # With the [:] we make a copy of self.path, so that parent.path is not affected by changes
+            self.path = parent.path[:]
+            # Store our own value as path
+            self.path.append(value)
+            # Store start and goal state
+            self.start = parent.start
+            self.goal = parent.goal
+        else:
+            self.path = [value]
+            self.start = start
+            self.goal = goal
+    def get_dist(self):
+        pass
+
+    def creae_children(self):
         pass
 
 # Chip 1 definieren
