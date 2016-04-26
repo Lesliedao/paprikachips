@@ -5,6 +5,7 @@
 # Programma om de ondergrens te berekenen.
 # Bron: http://web.mit.edu/eranki/www/tutorials/search/
 # Bron: http://www.redblobgames.com/pathfinding/a-star/implementation.html
+# Bron: https://gist.github.com/jamiees2/5531924
 ##
 
 # Importeer math module.
@@ -142,6 +143,7 @@ def Astar(startgate, goalgate, chip):
         # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit
         # open_list
         q = open_list.pop(open_list.index(min(open_list, key = lambda x: x["F"])))
+        closed_list.append(q)
 
         if q["node"] == goal:
             path = []
@@ -173,20 +175,29 @@ def Astar(startgate, goalgate, chip):
         if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_filtered:
             children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
         for child in children:
-            if child in closed_list:
+            if any(d["node"] == child for d in closed_list):
                 continue
-            # if child == goal:
-            #     # Stop the search
-            #     found_path = True
-            #     end = {"node": child, "G": q["G"] + 1, "H": 0, "F": q["G"] + 1, "parent": q}
-            #     break
+            # if any(d["node"] == child for d in open_list):
+            #     new_G = q["G"] + 1
+            #     oldnode = [x for x in open_list if x["node"] == child][0]
+            #     if oldnode["G"] > new_G:
+            #         oldnode["G"] = new_G
+            #         oldnode["parent"] = q
+            #     else:
+            #         G = q["G"] + 1
+            #         F = G + manhattan(child, goal)
+            #         open_list.append({"node": child, "G": G, "F": F, "parent": q})
+                # # if child == goal:
+                # #     # Stop the search
+                # #     found_path = True
+                # #     end = {"node": child, "G": q["G"] + 1, "H": 0, "F": q["G"] + 1, "parent": q}
+                # #     break
             G = q["G"] + 1
             F = G + manhattan(child, goal)
             # if len([d for d in open_list if d["node"] == child and d["F"] < F]) == 0 and len([d for d in closed_list if d["node"] == child and d["F"] < F]) == 0:
             #     open_list.append({"node": child, "G": G, "H": H, "F": F, "parent": q})
             if not any(d["node"] == child for d in open_list) and not any(d["node"] == child for d in closed_list):
                 open_list.append({"node": child, "G": G, "F": F, "parent": q})
-        closed_list.append(q)
     return []
     #     if found_path:
     #         # Build a path
