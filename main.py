@@ -3,6 +3,7 @@
 # Chips & Circuits
 # Team Paprikachips
 # Programma om de ondergrens te berekenen.
+# Bron: http://web.mit.edu/eranki/www/tutorials/search/
 ##
 
 # Importeer math module.
@@ -75,13 +76,13 @@ class Chip(object):
 
     #TODO: functie voor elk van de algoritmes
     #TODO: reset de chip
-    def dijkstra_algorithm(object):
+    def dijkstra_algorithm(self):
         pass
     def lee_algorithm(self):
         pass
-    def a_star_algorithm(object):
+    def a_star_algorithm(self):
         pass
-    def depth_first (object):
+    def depth_first (self):
         pass
 
 
