@@ -12,6 +12,8 @@ from grid_info import *
 from Queue import PriorityQueue
 
 class Chip(object):
+    # Zorg dat chip gerest kan worden nadat algorithme is gebruikt
+    @resettable
     # Houd het maximum aantal lagen, de lagen zelf, breedte en hoogte en de
     # draden bij.
     def __init__(self, width, height, grid):
@@ -62,11 +64,29 @@ class Chip(object):
     def connect_gates(self, x1, y1, z1, x2, y2, z2):
         start = (x1, y1, z1)
         goal = (x2, y2, z2)
+    def reset_chip(self):
+        pass
         # TODO: algoritme bepaalt stuk voor stuk waar elk draad komt
+
         # Als het volgende stuk draad de rest met goal verbindt, check dan niet op collision
         # TODO: voeg het pad pas aan obstacles toe als het hele pad af is
         # for node in self.wires[-1].path:
         #     self.obstacles.append(node)
+
+    #TODO: functie voor elk van de algoritmes
+    #TODO: reset de chip
+    def dijkstra_algorithm(object):
+        pass
+
+    def lee_algorithm(self):
+        pass
+
+    def a_star_algorithm(object):
+        pass
+
+    def depth_first (object):
+        pass
+
 
 # Wire houdt een list path bij met coordinaten waar het draad loopt.
 class Wire(object):
@@ -76,44 +96,6 @@ class Wire(object):
     # Voeg een segment toe aan dit draad naar de coordinaten (x, y, z).
     def extend_wire(self, x, y, z):
         self.path.append((x, y, z))
-
-#TODO: klasse voor elk van de algoritmes
-class Dijkstra(object):
-    def __init__(self):
-        pass
-
-class Lee(object):
-    def __init__(self):
-        pass
-
-class Astar(object):
-    def __init__(self, value, parent, start = 0, goal = 0):
-        # List of all neighbouring possibilities (squares imediately next to the starting point)
-        self.children = []
-        # Store current parents
-        self.parent = parent
-        # Store current value
-        self.value = value
-        # This is just a placeholder
-        self.dist = 0
-        # Check if the parent is not 0
-        if parent:
-            # With the [:] we make a copy of self.path, so that parent.path is not affected by changes
-            self.path = parent.path[:]
-            # Store our own value as path
-            self.path.append(value)
-            # Store start and goal state
-            self.start = parent.start
-            self.goal = parent.goal
-        else:
-            self.path = [value]
-            self.start = start
-            self.goal = goal
-    def get_dist(self):
-        pass
-
-    def create_children(self):
-        pass
 
 # Chip 1 definieren
 chip1 = Chip(18, 13, grid1)
