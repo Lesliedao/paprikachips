@@ -64,8 +64,8 @@ class Chip(object):
     def connect_gates(self, x1, y1, z1, x2, y2, z2):
         start = (x1, y1, z1)
         goal = (x2, y2, z2)
-    def reset_chip(self)
-
+    def reset_chip(self):
+        pass
         # TODO: algoritme bepaalt stuk voor stuk waar elk draad komt
 
         # Als het volgende stuk draad de rest met goal verbindt, check dan niet op collision
