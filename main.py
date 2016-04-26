@@ -4,6 +4,7 @@
 # Team Paprikachips
 # Programma om de ondergrens te berekenen.
 # Bron: http://web.mit.edu/eranki/www/tutorials/search/
+# Bron: http://www.redblobgames.com/pathfinding/a-star/implementation.html
 ##
 
 # Importeer math module.
@@ -141,6 +142,16 @@ def Astar(startgate, goalgate, chip):
         # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit
         # open_list
         q = open_list.pop(open_list.index(min(open_list, key = lambda x: x["F"])))
+
+        if q["node"] == goal:
+            path = []
+            while q["parent"] != None:
+                path.append(q["node"])
+                q = q["parent"]
+            path.append(q["node"])
+            path.reverse()
+            return path
+
         # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q
         children = []
         # North child
@@ -162,11 +173,13 @@ def Astar(startgate, goalgate, chip):
         if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_filtered:
             children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
         for child in children:
-            if child == goal:
-                # Stop the search
-                found_path = True
-                end = {"node": child, "G": q["G"] + 1, "H": 0, "F": q["G"] + 1, "parent": q}
-                break
+            if child in closed_list:
+                continue
+            # if child == goal:
+            #     # Stop the search
+            #     found_path = True
+            #     end = {"node": child, "G": q["G"] + 1, "H": 0, "F": q["G"] + 1, "parent": q}
+            #     break
             G = q["G"] + 1
             F = G + manhattan(child, goal)
             # if len([d for d in open_list if d["node"] == child and d["F"] < F]) == 0 and len([d for d in closed_list if d["node"] == child and d["F"] < F]) == 0:
@@ -174,36 +187,36 @@ def Astar(startgate, goalgate, chip):
             if not any(d["node"] == child for d in open_list) and not any(d["node"] == child for d in closed_list):
                 open_list.append({"node": child, "G": G, "F": F, "parent": q})
         closed_list.append(q)
-        if found_path:
-            # Build a path
-            path = []
-            current = end
-            while True:
-                path.insert(0, current["node"])
-                current = current["parent"]
-                if current == None:
-                    break
-                else:
-                    continue
-            break
-
-        # TODO: backtracking als er geen pad te vinden is
-        if not open_list and not found_path:
-            # backtrack
-            pass
-
-    if found_path:
-        for node in path:
-            if node not in chip.obstacles:
-                chip.obstacles.append(node)
-        print "Found path from %d to %d" % (startgate, goalgate)
-        return path
-    else:
-        print "Could not find a path from %d to %d" % (startgate, goalgate)
-        return []
+    return []
+    #     if found_path:
+    #         # Build a path
+    #         path = []
+    #         current = end
+    #         while True:
+    #             path.insert(0, current["node"])
+    #             current = current["parent"]
+    #             if current == None:
+    #                 break
+    #             else:
+    #                 continue
+    #         break
+    #
+    #     # TODO: backtracking als er geen pad te vinden is
+    #
+    # if found_path:
+    #     for node in path:
+    #         if node not in chip.obstacles:
+    #             chip.obstacles.append(node)
+    #     print "Found path from %d to %d" % (startgate, goalgate)
+    #     print path
+    #     return path
+    # else:
+    #     print "Could not find a path from %d to %d" % (startgate, goalgate)
+    #     return []
 
 for i in netlist_1:
-    Astar(i[0] + 1, i[1] + 1, chip1)
+    print "Path from %d to %d" % (i[0] + 1, i[1] + 1)
+    print Astar(i[0] + 1, i[1] + 1, chip1)
 print ""
 
 # for i in netlist_2:
