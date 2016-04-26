@@ -147,7 +147,6 @@ def Astar(startgate, goalgate, chip):
         # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit
         # open_list
         q = open_list.pop(open_list.index(min(open_list, key = lambda x: x["F"])))
-        # TODO: Check of child een obstacle is voordat je appendt aan children
         # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q
         children = []
         # North child
@@ -190,13 +189,24 @@ def Astar(startgate, goalgate, chip):
                 else:
                     continue
             break
+
+        # TODO: backtracking als er geen pad te vinden is
+        if not open_list and not found_path:
+            # backtrack
+            pass
+
     if found_path:
         for node in path:
-            print node
+            if node not in chip.obstacles:
+                chip.obstacles.append(node)
+        print "Found path from %d to %d" % (startgate, goalgate)
+        return path
     else:
-        print "No path found"
+        print "Could not find a path from %d to %d" % (startgate, goalgate)
+        return []
 
-Astar(1, 11, chip1)
+for i in netlist_1:
+    Astar(i[0] + 1, i[1] + 1, chip1)
 
 # Berekenen van de ondergrens met behulp van de manhattan distance.
 # Ondergrens netlist 1
