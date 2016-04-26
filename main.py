@@ -190,8 +190,11 @@ def Astar(startgate, goalgate, chip):
                 else:
                     continue
             break
-    for node in path:
-        print node
+    if found_path:
+        for node in path:
+            print node
+    else:
+        print "No path found"
 
 Astar(1, 11, chip1)
 
