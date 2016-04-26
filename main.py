@@ -149,8 +149,10 @@ def Astar(startgate, goalgate, chip):
             path = []
             while q["parent"] != None:
                 path.append(q["node"])
+                chip.obstacles.append(q["node"])
                 q = q["parent"]
             path.append(q["node"])
+            chip.obstacles.append(q["node"])
             path.reverse()
             return path
 
@@ -175,28 +177,17 @@ def Astar(startgate, goalgate, chip):
         if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_filtered:
             children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
         for child in children:
-            if any(d["node"] == child for d in closed_list):
+            if child in [d["node"] for d in closed_list]:
                 continue
-            # if any(d["node"] == child for d in open_list):
-            #     new_G = q["G"] + 1
-            #     oldnode = [x for x in open_list if x["node"] == child][0]
-            #     if oldnode["G"] > new_G:
-            #         oldnode["G"] = new_G
-            #         oldnode["parent"] = q
-            #     else:
-            #         G = q["G"] + 1
-            #         F = G + manhattan(child, goal)
-            #         open_list.append({"node": child, "G": G, "F": F, "parent": q})
-                # # if child == goal:
-                # #     # Stop the search
-                # #     found_path = True
-                # #     end = {"node": child, "G": q["G"] + 1, "H": 0, "F": q["G"] + 1, "parent": q}
-                # #     break
-            G = q["G"] + 1
-            F = G + manhattan(child, goal)
-            # if len([d for d in open_list if d["node"] == child and d["F"] < F]) == 0 and len([d for d in closed_list if d["node"] == child and d["F"] < F]) == 0:
-            #     open_list.append({"node": child, "G": G, "H": H, "F": F, "parent": q})
-            if not any(d["node"] == child for d in open_list) and not any(d["node"] == child for d in closed_list):
+            if child in [d["node"] for d in open_list]:
+                new_G = q["G"] + 1
+                oldnode = [x for x in open_list if x["node"] == child][0]
+                if oldnode["G"] > new_G:
+                    oldnode["G"] = new_G
+                    oldnode["parent"] = q
+            else:
+                G = q["G"] + 1
+                F = G + manhattan(child, goal)
                 open_list.append({"node": child, "G": G, "F": F, "parent": q})
     return []
     #     if found_path:
