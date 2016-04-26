@@ -28,65 +28,68 @@ def out_of_bounds(x, y, z, width, height, n_layers):
         return True
     return False
 
-# A* test
-found_path = False
-# Initialiseer een open list
-open_list = []
-# Initialiseer een closed list
-closed_list = []
+def Astar(startgate, goalgate, grid):
+    # A* test
+    found_path = False
+    # Initialiseer een open list
+    open_list = []
+    # Initialiseer een closed list
+    closed_list = []
 
-# Plaats de start node in de open list, waarvan de F op 0 kan blijven
-start = {"node": (1,1,0), "F": 12, "parent": None}
-goal = (15, 12, 2)
-open_list.append(start)
+    # Plaats de start node in de open list, waarvan de F op 0 kan blijven
+    start = {"node": get_coord(startgate, grid), "F": manhattan(get_coord(startgate, grid), get_coord(goalgate, grid)), "parent": None}
+    goal = get_coord(goalgate, grid)
+    open_list.append(start)
 
-# Zolang de open list niet leeg is
-while open_list:
-    # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit
-    # open_list
-    q = open_list.pop(open_list.index(min(open_list, key = lambda x: x["F"])))
-    # TODO: Check of child een obstacle is voordat je appendt aan children
-    # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q
-    children = []
-    # North child
-    if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], 18, 13, 7):
-        children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
-    # East child
-    if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], 18, 13, 7):
-        children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
-    # South child
-    if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], 18, 13, 7):
-        children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
-    # West child
-    if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], 18, 13, 7):
-        children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
-    # Up child
-    if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, 18, 13, 7):
-        children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
-    # Down child
-    if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, 18, 13, 7):
-        children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
-    for child in children:
-        if child == goal:
-            # Stop the search
-            found_path = True
-            end = {"node": child, "F": 0, "parent": q}
-            break
-        F = manhattan(child, goal)
-        if not any(d["node"] == child for d in open_list) and not any(d["node"] == child for d in closed_list):
-            open_list.append({"node": child, "F": F, "parent": q})
-    closed_list.append(q)
-    if found_path:
-        # Build a path
-        path = []
-        current = end
-        while True:
-            path.insert(0, current["node"])
-            current = current["parent"]
-            if current == None:
+    # Zolang de open list niet leeg is
+    while open_list:
+        # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit
+        # open_list
+        q = open_list.pop(open_list.index(min(open_list, key = lambda x: x["F"])))
+        # TODO: Check of child een obstacle is voordat je appendt aan children
+        # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q
+        children = []
+        # North child
+        if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], 18, 13, 7):
+            children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
+        # East child
+        if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], 18, 13, 7):
+            children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
+        # South child
+        if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], 18, 13, 7):
+            children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
+        # West child
+        if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], 18, 13, 7):
+            children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
+        # Up child
+        if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, 18, 13, 7):
+            children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
+        # Down child
+        if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, 18, 13, 7):
+            children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
+        for child in children:
+            if child == goal:
+                # Stop the search
+                found_path = True
+                end = {"node": child, "F": 0, "parent": q}
                 break
-            else:
-                continue
-        break
-for node in path:
-    print node
+            F = manhattan(child, goal)
+            if not any(d["node"] == child for d in open_list) and not any(d["node"] == child for d in closed_list):
+                open_list.append({"node": child, "F": F, "parent": q})
+        closed_list.append(q)
+        if found_path:
+            # Build a path
+            path = []
+            current = end
+            while True:
+                path.insert(0, current["node"])
+                current = current["parent"]
+                if current == None:
+                    break
+                else:
+                    continue
+            break
+    for node in path:
+        print node
+
+Astar(1, 22, grid1)
