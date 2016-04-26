@@ -82,6 +82,8 @@ while not exit:
         screen.blit(text_next, [65, (banner_top + line_length_vert + 20)])
         screen.blit(text_prev, [(screenwidth - 195), (banner_top + line_length_vert + 20)])
 
+        pygame.draw.line(screen, BLUE, (int(banner_left + (1 * block_size)), int(banner_top + (5 * block_size))), (int(banner_left + ([] * block_size)), int(banner_top + (5 * block_size))), 3)
+
         # Zet de nodes met nummers op de grid.
         for i in node_list:
             node_number = font_grid.render("%d" %i[0], True, BLACK)
