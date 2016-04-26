@@ -7,6 +7,7 @@
  
 import pygame
 from grid_info import *
+from test import *
  
 # De game engine initialiseren. 
 pygame.init()
@@ -15,7 +16,7 @@ pygame.init()
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
 WHITE = (255, 255, 255)
-
+BLUE = (0, 0, 255)
  
 # Stelt de groote van elementen van de visualisatie vast.
 screenlength = 500
@@ -82,7 +83,8 @@ while not exit:
         screen.blit(text_next, [65, (banner_top + line_length_vert + 20)])
         screen.blit(text_prev, [(screenwidth - 195), (banner_top + line_length_vert + 20)])
 
-        pygame.draw.line(screen, BLUE, (int(banner_left + (1 * block_size)), int(banner_top + (5 * block_size))), (int(banner_left + ([] * block_size)), int(banner_top + (5 * block_size))), 3)
+        for i in range (len (astar_list) -1):
+            pygame.draw.line(screen, BLUE, (int(banner_left + (astar_list[i][0] * block_size)), int(banner_top + (astar_list[i][1] * block_size))), (int(banner_left + (astar_list[i+1][0] * block_size)), int(banner_top + (astar_list[i+1][1] * block_size))), 3)
 
         # Zet de nodes met nummers op de grid.
         for i in node_list:
