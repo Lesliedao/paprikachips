@@ -13,7 +13,7 @@ from Queue import PriorityQueue
 
 class Chip(object):
     # Zorg dat chip gerest kan worden nadat algorithme is gebruikt
-    @resettable
+    # @resettable
     # Houd het maximum aantal lagen, de lagen zelf, breedte en hoogte en de
     # draden bij.
     def __init__(self, width, height, grid):
@@ -77,13 +77,10 @@ class Chip(object):
     #TODO: reset de chip
     def dijkstra_algorithm(object):
         pass
-
     def lee_algorithm(self):
         pass
-
     def a_star_algorithm(object):
         pass
-
     def depth_first (object):
         pass
 
@@ -99,15 +96,15 @@ class Wire(object):
 
 # Chip 1 definieren
 chip1 = Chip(18, 13, grid1)
-chip1.print_grid()
-chip1.print_obstacles()
-print ""
+# chip1.print_grid()
+# chip1.print_obstacles()
+# print ""
 
 # Chip 2 definieren
 chip2 = Chip(18, 17, grid2)
-chip2.print_grid()
-chip2.print_obstacles()
-print ""
+# chip2.print_grid()
+# chip2.print_obstacles()
+# print ""
 
 # Functie voor het berekenen van de manhattan distance.
 def manhattan(x, y):
@@ -122,14 +119,94 @@ def get_coord(gate, grid):
         if i[0] == gate:
             return (i[1], i[2], 0)
 
-# chip3 = Chip(18, 13, grid1)
-# chip3.add_new_wire(1, 1)
-# chip3.add_wire_segment(2, 1)
-# chip3.add_wire_segment(3, 1)
-# chip3.add_wire_segment(4, 1)
-# chip3.add_wire_segment(5, 1)
-# chip3.add_wire_segment(6, 1)
-# chip3.print_obstacles()
+# Out of bounds functie
+def out_of_bounds(x, y, z, width, height, n_layers):
+    if x < 0 or x >= width or y < 0 or y >= height or z < 0 or z >= n_layers:
+        return True
+    return False
+
+def Astar(startgate, goalgate, chip):
+    # A* test
+    found_path = False
+    # Initialiseer een open list
+    open_list = []
+    # Initialiseer een closed list
+    closed_list = []
+    grid = chip.grid
+
+    # Plaats de start node in de open list, waarvan de F op 0 kan blijven
+    start = {"node": get_coord(startgate, grid), "F": manhattan(get_coord(startgate, grid), get_coord(goalgate, grid)), "parent": None}
+    goal = get_coord(goalgate, grid)
+    open_list.append(start)
+
+    obstacles = chip.obstacles
+    obstacles_filtered = [x for x in obstacles if x != goal]
+
+    # Zolang de open list niet leeg is
+    while open_list:
+        # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit
+        # open_list
+        q = open_list.pop(open_list.index(min(open_list, key = lambda x: x["F"])))
+        # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q
+        children = []
+        # North child
+        if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_filtered:
+            children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
+        # East child
+        if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
+            children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
+        # South child
+        if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_filtered:
+            children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
+        # West child
+        if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
+            children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
+        # Up child
+        if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_filtered:
+            children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
+        # Down child
+        if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_filtered:
+            children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
+        for child in children:
+            if child == goal:
+                # Stop the search
+                found_path = True
+                end = {"node": child, "F": 0, "parent": q}
+                break
+            F = manhattan(child, goal)
+            if not any(d["node"] == child for d in open_list) and not any(d["node"] == child for d in closed_list):
+                open_list.append({"node": child, "F": F, "parent": q})
+        closed_list.append(q)
+        if found_path:
+            # Build a path
+            path = []
+            current = end
+            while True:
+                path.insert(0, current["node"])
+                current = current["parent"]
+                if current == None:
+                    break
+                else:
+                    continue
+            break
+
+        # TODO: backtracking als er geen pad te vinden is
+        if not open_list and not found_path:
+            # backtrack
+            pass
+
+    if found_path:
+        for node in path:
+            if node not in chip.obstacles:
+                chip.obstacles.append(node)
+        print "Found path from %d to %d" % (startgate, goalgate)
+        return path
+    else:
+        print "Could not find a path from %d to %d" % (startgate, goalgate)
+        return []
+
+for i in netlist_1:
+    Astar(i[0] + 1, i[1] + 1, chip1)
 
 # Berekenen van de ondergrens met behulp van de manhattan distance.
 # Ondergrens netlist 1
