@@ -1,4 +1,4 @@
-# pylint: disable=C0103,C0111,C0303,C0301,C0330
+# pylint: disable=C0103,C0111,C0303,C0301,C0330,C0326
 ##
 # Chips & Circuits
 # Team Paprikachips
@@ -27,19 +27,19 @@ class Chip(object):
         self.obstacles = []
         for gate in self.grid:
             name, x, y = gate
-            self.layers[0][y][x] = name
-            self.obstacles.append((x, y, 0))
+            self.layers[3][y][x] = name
+            self.obstacles.append((x, y, 3))
     # Start een nieuw draad.
-    def add_new_wire(self, x, y, z = 0):
+    def add_new_wire(self, x, y, z = 3):
         self.wires.append(Wire(x, y, z))
     # Voeg een segment aan een bestaande draad toe.
-    def add_wire_segment(self, x, y, z = 0, wire_index = -1):
+    def add_wire_segment(self, x, y, z = 3, wire_index = -1):
         if self.detect_collision(x, y, z):
             print "Obstacle detected. Adding wire segment aborted."
         else:
             self.wires[wire_index].extend_wire(x, y, z)
     # Functie om de gates aan de chip toe te voegen.
-    def add_gate(self, gate, x, y, z = 0):
+    def add_gate(self, gate, x, y, z = 3):
         if self.detect_collision(x, y, z):
             print "Obstacle detected. Adding gate aborted."
         else:
@@ -62,9 +62,6 @@ class Chip(object):
         if (x, y, z) in self.obstacles:
             return True
         return False
-    def connect_gates(self, x1, y1, z1, x2, y2, z2):
-        start = (x1, y1, z1)
-        goal = (x2, y2, z2)
     def reset_chip(self):
         pass
         # TODO: algoritme bepaalt stuk voor stuk waar elk draad komt
@@ -95,17 +92,13 @@ class Wire(object):
     def extend_wire(self, x, y, z):
         self.path.append((x, y, z))
 
-# Chip 1 definieren
+# Chips definieren
 chip1 = Chip(18, 13, grid1)
-# chip1.print_grid()
-# chip1.print_obstacles()
-# print ""
-
-# Chip 2 definieren
-chip2 = Chip(18, 17, grid2)
-# chip2.print_grid()
-# chip2.print_obstacles()
-# print ""
+chip2 = Chip(18, 13, grid1)
+chip3 = Chip(18, 13, grid1)
+chip4 = Chip(18, 17, grid2)
+chip5 = Chip(18, 17, grid2)
+chip6 = Chip(18, 17, grid2)
 
 # Functie voor het berekenen van de manhattan distance.
 def manhattan(x, y):
@@ -118,7 +111,7 @@ def manhattan(x, y):
 def get_coord(gate, grid):
     for i in grid:
         if i[0] == gate:
-            return (i[1], i[2], 0)
+            return (i[1], i[2], 3)
 
 # Out of bounds functie
 def out_of_bounds(x, y, z, width, height, n_layers):
@@ -136,7 +129,7 @@ def Astar(startgate, goalgate, chip):
     grid = chip.grid
 
     # Plaats de start node in de open list, waarvan de F op 0 kan blijven
-    start = {"node": get_coord(startgate, grid), "F": manhattan(get_coord(startgate, grid), get_coord(goalgate, grid)), "parent": None}
+    start = {"node": get_coord(startgate, grid), "G": 0, "F": 0, "parent": None}
     goal = get_coord(goalgate, grid)
     open_list.append(start)
 
@@ -172,11 +165,14 @@ def Astar(startgate, goalgate, chip):
             if child == goal:
                 # Stop the search
                 found_path = True
-                end = {"node": child, "F": 0, "parent": q}
+                end = {"node": child, "G": q["G"] + 1, "H": 0, "F": q["G"] + 1, "parent": q}
                 break
-            F = manhattan(child, goal)
+            G = q["G"] + 1
+            F = G + manhattan(child, goal)
+            # if len([d for d in open_list if d["node"] == child and d["F"] < F]) == 0 and len([d for d in closed_list if d["node"] == child and d["F"] < F]) == 0:
+            #     open_list.append({"node": child, "G": G, "H": H, "F": F, "parent": q})
             if not any(d["node"] == child for d in open_list) and not any(d["node"] == child for d in closed_list):
-                open_list.append({"node": child, "F": F, "parent": q})
+                open_list.append({"node": child, "G": G, "F": F, "parent": q})
         closed_list.append(q)
         if found_path:
             # Build a path
@@ -208,40 +204,61 @@ def Astar(startgate, goalgate, chip):
 
 for i in netlist_1:
     Astar(i[0] + 1, i[1] + 1, chip1)
+print ""
 
-# Berekenen van de ondergrens met behulp van de manhattan distance.
-# Ondergrens netlist 1
-wire_length = 0
-for i in netlist_1:
-    wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
-print "Ondergrens netlist 1: %d" % wire_length
+# for i in netlist_2:
+#     Astar(i[0] + 1, i[1] + 1, chip2)
+# print ""
+#
+# for i in netlist_3:
+#     Astar(i[0] + 1, i[1] + 1, chip3)
+# print ""
+#
+# for i in netlist_4:
+#     Astar(i[0] + 1, i[1] + 1, chip4)
+# print ""
+#
+# for i in netlist_5:
+#     Astar(i[0] + 1, i[1] + 1, chip5)
+# print ""
+#
+# for i in netlist_6:
+#     Astar(i[0] + 1, i[1] + 1, chip6)
+# print ""
 
-# Ondergrens netlist 2
-wire_length = 0
-for i in netlist_2:
-    wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
-print "Ondergrens netlist 2: %d" % wire_length
-
-# Ondergrens netlist 3
-wire_length = 0
-for i in netlist_3:
-    wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
-print "Ondergrens netlist 3: %d" % wire_length
-
-# Ondergrens netlist 4
-wire_length = 0
-for i in netlist_4:
-    wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
-print "Ondergrens netlist 4: %d" % wire_length
-
-# Ondergrens netlist 5
-wire_length = 0
-for i in netlist_5:
-    wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
-print "Ondergrens netlist 5: %d" % wire_length
-
-# Ondergrens netlist 6
-wire_length = 0
-for i in netlist_6:
-    wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
-print "Ondergrens netlist 6: %d" % wire_length
+# # Berekenen van de ondergrens met behulp van de manhattan distance.
+# # Ondergrens netlist 1
+# wire_length = 0
+# for i in netlist_1:
+#     wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
+# print "Ondergrens netlist 1: %d" % wire_length
+#
+# # Ondergrens netlist 2
+# wire_length = 0
+# for i in netlist_2:
+#     wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
+# print "Ondergrens netlist 2: %d" % wire_length
+#
+# # Ondergrens netlist 3
+# wire_length = 0
+# for i in netlist_3:
+#     wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
+# print "Ondergrens netlist 3: %d" % wire_length
+#
+# # Ondergrens netlist 4
+# wire_length = 0
+# for i in netlist_4:
+#     wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
+# print "Ondergrens netlist 4: %d" % wire_length
+#
+# # Ondergrens netlist 5
+# wire_length = 0
+# for i in netlist_5:
+#     wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
+# print "Ondergrens netlist 5: %d" % wire_length
+#
+# # Ondergrens netlist 6
+# wire_length = 0
+# for i in netlist_6:
+#     wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
+# print "Ondergrens netlist 6: %d" % wire_length
