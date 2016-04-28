@@ -6,8 +6,11 @@
 ##
  
 import pygame
+import math
 from grid_info import *
 from test import *
+from netlist1sol import *
+import time
  
 # De game engine initialiseren. 
 pygame.init()
@@ -23,7 +26,11 @@ screenlength = 500
 screenwidth = 400
 block_size = 22
 grid_font_size = 9
+current_layer = 3
 node_size = 8
+
+block_am_x = 17 #17
+block_am_y = 12 #16
 
 size = (screenwidth, screenlength)
 screen = pygame.display.set_mode(size)
@@ -48,22 +55,27 @@ while not exit:
     font_title = pygame.font.SysFont('Helvetica', 30, True, False)
     font_other = pygame.font.SysFont('Helvetica', 20, True, False)
     font_grid = pygame.font.SysFont('Helvetica', grid_font_size, True, False)
-    text_title = font_title.render("Chips and circuits: Grids", True, BLACK)
+    text_title = font_title.render("Current layer %d" % current_layer, True, BLACK)
     text_next = font_other.render("Next layer", True, BLACK)
     text_prev = font_other.render("Previous layer", True, BLACK)
 
+    line_length_hor = block_am_x * block_size
+    line_length_vert = block_am_y * block_size
+    
+    # Bepalen van de banners rond de grid.
+    banner_left = (screenwidth - line_length_hor) / 2 # 65
+    banner_right = screenwidth - banner_left # 335
+    banner_top = (screenlength - line_length_vert) / 2 # 152,5
+    banner_bottom = screenlength - banner_top # 347,5
+
+    def distance(a, b):
+        x1, y1 = a
+        x2, y2 = b
+        return math.sqrt(math.fabs(x1 - x2)**2 + math.fabs(y1 - y2)**2)
+
     def make_grid(blocks_x, blocks_y, node_list):
-        line_length_hor = blocks_x * block_size
-        line_length_vert = blocks_y * block_size
-        line_counter = 0
-
-        # Bepalen van de banners rond de grid.
-        banner_left = (screenwidth - line_length_hor) / 2 # 65
-        banner_right = screenwidth - banner_left # 335
-        banner_top = (screenlength - line_length_vert) / 2 # 152,5
-        banner_bottom = screenlength - banner_top # 347,5
-
         # While loop voor de lijnen op de x-as, dus de verticale lijnen.
+        line_counter = 0
         x_start = banner_left
         while line_counter != (blocks_x + 1):
             pygame.draw.line(screen, BLACK, [x_start, banner_top], [x_start, banner_bottom])
@@ -83,18 +95,45 @@ while not exit:
         screen.blit(text_next, [65, (banner_top + line_length_vert + 20)])
         screen.blit(text_prev, [(screenwidth - 195), (banner_top + line_length_vert + 20)])
 
-        for i in range (len (astar_list) -1):
-            pygame.draw.line(screen, BLUE, (int(banner_left + (astar_list[i][0] * block_size)), int(banner_top + (astar_list[i][1] * block_size))), (int(banner_left + (astar_list[i+1][0] * block_size)), int(banner_top + (astar_list[i+1][1] * block_size))), 3)
+        for i in range (len (solution1) -1):
+            for j in range (len (solution1[i]) - 1):
+                if solution1[i][j][2] == current_layer:
+                    pygame.draw.line(screen, BLUE, (int(banner_left + (solution1[i][j][0] * block_size)), int(banner_top + (solution1[i][j][1] * block_size))), (int(banner_left + (solution1[i][j+1][0] * block_size)), int(banner_top + (solution1[i][j+1][1] * block_size))), 3)
+
 
         # Zet de nodes met nummers op de grid.
-        for i in node_list:
-            node_number = font_grid.render("%d" %i[0], True, BLACK)
-            pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top+ (i[2] * block_size))), node_size, 0)
-            screen.blit(node_number, [int(banner_left + (i[1] * block_size)) - 4, int(banner_top+ (i[2] * block_size)) - 4])
+        if current_layer == 3:
+            for i in node_list:
+                node_number = font_grid.render("%d" %i[0], True, BLACK)
+                pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top+ (i[2] * block_size))), node_size, 0)
+                screen.blit(node_number, [int(banner_left + (i[1] * block_size)) - 4, int(banner_top+ (i[2] * block_size)) - 4])
+                
+    def button_pressed():
+        global current_layer
+        # Als "Next layer" wordt geklikt.
+        if current_layer == 6:
+            pass
+        else:
+            if distance(pygame.mouse.get_pos(), (65, banner_top + line_length_vert + 20)) < 40:
+                current_layer += 1
+        # Als "Previous layer" wordt geklikt.
+        if current_layer == 0:
+            pass
+        else:
+            if distance(pygame.mouse.get_pos(), ((screenwidth - 195), (banner_top + line_length_vert + 20))) < 40:
+                current_layer -= 1
+        print (current_layer)
+
             
     # Maakt het daadwerkelijke grid met het meegegeven aantal blokjes.
-    #make_grid(17, 12, grid1)
-    make_grid(17, 16, grid2)
+    make_grid(block_am_x, block_am_y, grid1)
+
+    # if pygame.mouse.get_pressed()[0] == True:
+    #     button_pressed()
+
+    if event.type == pygame.MOUSEBUTTONDOWN:
+        button_pressed()
+        time.sleep(0.1)
     
     # Geeft de images weer op het scherm.
     pygame.display.flip()
