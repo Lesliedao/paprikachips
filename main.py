@@ -14,11 +14,8 @@ import random
 import json
 # Importeer de grids en netlists uit externe file grid_info.
 from grid_info import *
-from Queue import PriorityQueue
 
 class Chip(object):
-    # Zorg dat chip gerest kan worden nadat algorithme is gebruikt
-    # @resettable
     # Houd het maximum aantal lagen, de lagen zelf, breedte en hoogte en de
     # draden bij.
     def __init__(self, width, height, grid):
@@ -33,15 +30,15 @@ class Chip(object):
             name, x, y = gate
             self.layers[3][y][x] = name
             self.obstacles.append((x, y, 3))
-    # Start een nieuw draad.
-    def add_new_wire(self, x, y, z = 3):
-        self.wires.append(Wire(x, y, z))
-    # Voeg een segment aan een bestaande draad toe.
-    def add_wire_segment(self, x, y, z = 3, wire_index = -1):
-        if self.detect_collision(x, y, z):
-            print "Obstacle detected. Adding wire segment aborted."
-        else:
-            self.wires[wire_index].extend_wire(x, y, z)
+    # # Start een nieuw draad.
+    # def add_new_wire(self, x, y, z = 3):
+    #     self.wires.append(Wire(x, y, z))
+    # # Voeg een segment aan een bestaande draad toe.
+    # def add_wire_segment(self, x, y, z = 3, wire_index = -1):
+    #     if self.detect_collision(x, y, z):
+    #         print "Obstacle detected. Adding wire segment aborted."
+    #     else:
+            # self.wires[wire_index].extend_wire(x, y, z)
     # Functie om de gates aan de chip toe te voegen.
     def add_gate(self, gate, x, y, z = 3):
         if self.detect_collision(x, y, z):
@@ -55,17 +52,17 @@ class Chip(object):
             print "Layer %d" % (i + 1)
             for row in self.layers[i]:
                 print row
-    # Functie om alle draden op een chip te laten printen.
-    def print_wires(self):
-        for wire in self.wires:
-            print wire.path
+    # # Functie om alle draden op een chip te laten printen.
+    # def print_wires(self):
+    #     for wire in self.wires:
+    #         print wire.path
     def print_obstacles(self):
         print self.obstacles
-    # Bekijk of een draad een gate of een andere draad snijdt.
-    def detect_collision(self, x, y, z):
-        if (x, y, z) in self.obstacles:
-            return True
-        return False
+    # # Bekijk of een draad een gate of een andere draad snijdt.
+    # def detect_collision(self, x, y, z):
+    #     if (x, y, z) in self.obstacles:
+    #         return True
+    #     return False
     def reset(self):
         self.wires = []
         self.obstacles = []
@@ -73,12 +70,6 @@ class Chip(object):
             name, x, y = gate
             self.layers[3][y][x] = name
             self.obstacles.append((x, y, 3))
-        # TODO: algoritme bepaalt stuk voor stuk waar elk draad komt
-
-        # Als het volgende stuk draad de rest met goal verbindt, check dan niet op collision
-        # TODO: voeg het pad pas aan obstacles toe als het hele pad af is
-        # for node in self.wires[-1].path:
-        #     self.obstacles.append(node)
     def used_layers(self):
         used = []
         for thing in self.obstacles:
@@ -86,25 +77,23 @@ class Chip(object):
                 used.append(thing[2])
         return len(used)
     #TODO: functie voor elk van de algoritmes
-    #TODO: reset de chip
-    def dijkstra_algorithm(self):
-        pass
-    def lee_algorithm(self):
-        pass
-    def a_star_algorithm(self):
-        pass
-    def depth_first (self):
-        pass
+    # def dijkstra_algorithm(self):
+    #     pass
+    # def lee_algorithm(self):
+    #     pass
+    # def a_star_algorithm(self):
+    #     pass
+    # def depth_first (self):
+    #     pass
 
-
-# Wire houdt een list path bij met coordinaten waar het draad loopt.
-class Wire(object):
-    def __init__(self, x, y, z):
-        self.path = []
-        self.path.append((x, y, z))
-    # Voeg een segment toe aan dit draad naar de coordinaten (x, y, z).
-    def extend_wire(self, x, y, z):
-        self.path.append((x, y, z))
+# # Wire houdt een list path bij met coordinaten waar het draad loopt.
+# class Wire(object):
+#     def __init__(self, x, y, z):
+#         self.path = []
+#         self.path.append((x, y, z))
+#     # Voeg een segment toe aan dit draad naar de coordinaten (x, y, z).
+#     def extend_wire(self, x, y, z):
+#         self.path.append((x, y, z))
 
 # Chips definieren
 chip1 = Chip(18, 13, grid1)
@@ -134,8 +123,6 @@ def out_of_bounds(x, y, z, width, height, n_layers):
     return False
 
 def Astar(startgate, goalgate, chip):
-    # A* test
-    found_path = False
     # Initialiseer een open list
     open_list = []
     # Initialiseer een closed list
@@ -202,31 +189,6 @@ def Astar(startgate, goalgate, chip):
                 F = G + manhattan(child, goal)
                 open_list.append({"node": child, "G": G, "F": F, "parent": q})
     return []
-    #     if found_path:
-    #         # Build a path
-    #         path = []
-    #         current = end
-    #         while True:
-    #             path.insert(0, current["node"])
-    #             current = current["parent"]
-    #             if current == None:
-    #                 break
-    #             else:
-    #                 continue
-    #         break
-    #
-    #     # TODO: backtracking als er geen pad te vinden is
-    #
-    # if found_path:
-    #     for node in path:
-    #         if node not in chip.obstacles:
-    #             chip.obstacles.append(node)
-    #     print "Found path from %d to %d" % (startgate, goalgate)
-    #     print path
-    #     return path
-    # else:
-    #     print "Could not find a path from %d to %d" % (startgate, goalgate)
-    #     return []
 
 max_iterations = 100
 
@@ -259,26 +221,6 @@ else:
     print "Used %d layers" % chip1.used_layers()
     with open("netlist1sol.py", "w") as f:
         json.dump(paths, f)
-
-# for i in netlist_2:
-#     Astar(i[0] + 1, i[1] + 1, chip2)
-# print ""
-#
-# for i in netlist_3:
-#     Astar(i[0] + 1, i[1] + 1, chip3)
-# print ""
-#
-# for i in netlist_4:
-#     Astar(i[0] + 1, i[1] + 1, chip4)
-# print ""
-#
-# for i in netlist_5:
-#     Astar(i[0] + 1, i[1] + 1, chip5)
-# print ""
-#
-# for i in netlist_6:
-#     Astar(i[0] + 1, i[1] + 1, chip6)
-# print ""
 
 # # Berekenen van de ondergrens met behulp van de manhattan distance.
 # # Ondergrens netlist 1
