@@ -233,7 +233,7 @@ max_iterations = 100
 # Netlist 1
 iteration = 0
 paths = []
-while len(paths) < len(netlist_1) or iteration < max_iterations:
+while len(paths) < len(netlist_1) and iteration < max_iterations:
     chip1.reset()
     paths = []
     iteration += 1
