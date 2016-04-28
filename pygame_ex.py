@@ -16,10 +16,12 @@ import time
 pygame.init()
  
 # Variabelen voor de kleuren.
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
+GREY2 = (120, 120, 120)
+BLACK = (0,0,0)
+GREY = (200,200,200)
 WHITE = (255, 255, 255)
-BLUE = (0, 0, 255)
+RED = (239,138,98)
+BLUE = (0,99,104)
  
 # Stelt de groote van elementen van de visualisatie vast.
 screenlength = 500
@@ -53,7 +55,7 @@ while not exit:
 
     # Maakt de verschillende teksten op het scherm aan. 
     font_title = pygame.font.SysFont('Helvetica', 30, True, False)
-    font_other = pygame.font.SysFont('Helvetica', 20, True, False)
+    font_other = pygame.font.SysFont('Helvetica', 14, True, False)
     font_grid = pygame.font.SysFont('Helvetica', grid_font_size, True, False)
     text_title = font_title.render("Current layer %d" % current_layer, True, BLACK)
     text_next = font_other.render("Next layer", True, BLACK)
@@ -78,7 +80,7 @@ while not exit:
         line_counter = 0
         x_start = banner_left
         while line_counter != (blocks_x + 1):
-            pygame.draw.line(screen, BLACK, [x_start, banner_top], [x_start, banner_bottom])
+            pygame.draw.line(screen, GREY2, [x_start, banner_top], [x_start, banner_bottom])
             x_start = x_start + block_size
             line_counter = line_counter + 1
 
@@ -86,15 +88,19 @@ while not exit:
         line_counter = 0
         y_start = banner_top
         while line_counter != (blocks_y + 1):
-            pygame.draw.line(screen, BLACK, [banner_left, y_start], [banner_right, y_start])
+            pygame.draw.line(screen, GREY2, [banner_left, y_start], [banner_right, y_start])
             y_start = y_start + block_size
             line_counter = line_counter + 1
 
+        pygame.draw.rect(screen, GREY, (65, (banner_top + line_length_vert + 20), 14, 14))
+        pygame.draw.rect(screen, GREY, ((screenwidth - 195), (banner_top + line_length_vert + 20), 14, 14))
+
         # Zet de verschillende texten op de juiste plek.
         screen.blit(text_title, [20, (banner_top - 50)])
-        screen.blit(text_next, [65, (banner_top + line_length_vert + 20)])
-        screen.blit(text_prev, [(screenwidth - 195), (banner_top + line_length_vert + 20)])
+        screen.blit(text_next, [65 + 22, (banner_top + line_length_vert + 20)])
+        screen.blit(text_prev, [(screenwidth - 195) + 22, (banner_top + line_length_vert + 20)])
 
+        # Zet de threads op de grid. 
         for i in range (len (solution1) -1):
             for j in range (len (solution1[i]) - 1):
                 if solution1[i][j][2] == current_layer:
@@ -108,19 +114,20 @@ while not exit:
                 pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top+ (i[2] * block_size))), node_size, 0)
                 screen.blit(node_number, [int(banner_left + (i[1] * block_size)) - 4, int(banner_top+ (i[2] * block_size)) - 4])
                 
+    # Verandert de layer als er op de next en previous buttons wordt geklikt. 
     def button_pressed():
         global current_layer
         # Als "Next layer" wordt geklikt.
         if current_layer == 6:
             pass
         else:
-            if distance(pygame.mouse.get_pos(), (65, banner_top + line_length_vert + 20)) < 40:
+            if distance(pygame.mouse.get_pos(), (65, banner_top + line_length_vert + 20)) < 14:
                 current_layer += 1
         # Als "Previous layer" wordt geklikt.
         if current_layer == 0:
             pass
         else:
-            if distance(pygame.mouse.get_pos(), ((screenwidth - 195), (banner_top + line_length_vert + 20))) < 40:
+            if distance(pygame.mouse.get_pos(), ((screenwidth - 195), (banner_top + line_length_vert + 20))) < 14:
                 current_layer -= 1
         print (current_layer)
 
@@ -128,12 +135,10 @@ while not exit:
     # Maakt het daadwerkelijke grid met het meegegeven aantal blokjes.
     make_grid(block_am_x, block_am_y, grid1)
 
-    # if pygame.mouse.get_pressed()[0] == True:
-    #     button_pressed()
-
+    # Checkt of er geklikt wordt. 
     if event.type == pygame.MOUSEBUTTONDOWN:
         button_pressed()
-        time.sleep(0.1)
+        time.sleep(0.15)
     
     # Geeft de images weer op het scherm.
     pygame.display.flip()
