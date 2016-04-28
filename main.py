@@ -235,6 +235,8 @@ while len(paths) < len(netlist_2) and iteration < max_iterations:
         path = Astar(i[0] + 1, i[1] + 1, chip2)
         if len(path) > 0:
             paths.append(path)
+        else:
+            break
     random.shuffle(netlist_2)
 
 print "Netlist 2"
