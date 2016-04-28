@@ -8,9 +8,10 @@
 # Bron: https://gist.github.com/jamiees2/5531924
 ##
 
-# Importeer math module.
+# Importeer modules
 import math
 import random
+import json
 # Importeer de grids en netlists uit externe file grid_info.
 from grid_info import *
 from Queue import PriorityQueue
@@ -65,15 +66,25 @@ class Chip(object):
         if (x, y, z) in self.obstacles:
             return True
         return False
-    def reset_chip(self):
-        pass
+    def reset(self):
+        self.wires = []
+        self.obstacles = []
+        for gate in self.grid:
+            name, x, y = gate
+            self.layers[3][y][x] = name
+            self.obstacles.append((x, y, 3))
         # TODO: algoritme bepaalt stuk voor stuk waar elk draad komt
 
         # Als het volgende stuk draad de rest met goal verbindt, check dan niet op collision
         # TODO: voeg het pad pas aan obstacles toe als het hele pad af is
         # for node in self.wires[-1].path:
         #     self.obstacles.append(node)
-
+    def used_layers(self):
+        used = []
+        for thing in self.obstacles:
+            if thing[2] not in used:
+                used.append(thing[2])
+        return used
     #TODO: functie voor elk van de algoritmes
     #TODO: reset de chip
     def dijkstra_algorithm(self):
@@ -217,11 +228,36 @@ def Astar(startgate, goalgate, chip):
     #     print "Could not find a path from %d to %d" % (startgate, goalgate)
     #     return []
 
-random.shuffle(netlist_1)
-for i in netlist_1:
-    print "Path from %d to %d" % (i[0] + 1, i[1] + 1)
-    print Astar(i[0] + 1, i[1] + 1, chip1)
-print ""
+max_iterations = 100
+
+# Netlist 1
+iteration = 0
+paths = []
+while len(paths) < len(netlist_1) or iteration < max_iterations:
+    chip1.reset()
+    paths = []
+    iteration += 1
+    for i in netlist_1:
+        path = Astar(i[0] + 1, i[1] + 1, chip1)
+        if len(path) > 0:
+            paths.append(path)
+    random.shuffle(netlist_1)
+
+print "Netlist 1"
+if len(paths) < len(netlist_1):
+    print "Could not find a solution in %d iterations" % max_iterations
+else:
+    chip1.wires = paths[:]
+    cost1 = 0
+    for wire in paths:
+        cost1 += len(wire) - 1
+    print "Found a solution in %d iterations with cost %d" % (iteration, cost1)
+    for i in len(netlist_1):
+        print "Path from %d to %d" % (netlist_1[i][0] + 1, netlist_1[i][1])
+        print paths[i]
+    print "Used %d layers" % chip1.used_layers()
+    with open("netlist1sol.py", "w") as f:
+        json.dump(paths, f)
 
 # for i in netlist_2:
 #     Astar(i[0] + 1, i[1] + 1, chip2)
