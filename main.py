@@ -10,6 +10,7 @@
 
 # Importeer math module.
 import math
+import random
 # Importeer de grids en netlists uit externe file grid_info.
 from grid_info import *
 from Queue import PriorityQueue
@@ -216,6 +217,7 @@ def Astar(startgate, goalgate, chip):
     #     print "Could not find a path from %d to %d" % (startgate, goalgate)
     #     return []
 
+random.shuffle(netlist_1)
 for i in netlist_1:
     print "Path from %d to %d" % (i[0] + 1, i[1] + 1)
     print Astar(i[0] + 1, i[1] + 1, chip1)
