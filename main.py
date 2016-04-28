@@ -19,7 +19,7 @@ class Chip(object):
     # Houd het maximum aantal lagen, de lagen zelf, breedte en hoogte en de
     # draden bij.
     def __init__(self, width, height, grid):
-        self.maxlayers = 7
+        self.maxlayers = 8
         self.layers = [[[0 for x in range(width)] for x in range(height)] for x in range (self.maxlayers)]
         self.width = width
         self.height = height
@@ -190,7 +190,7 @@ def Astar(startgate, goalgate, chip):
                 open_list.append({"node": child, "G": G, "F": F, "parent": q})
     return []
 
-max_iterations = 200
+max_iterations = 300
 
 # Netlist 1
 iteration = 0
