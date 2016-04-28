@@ -204,6 +204,8 @@ max_iterations = 1000
 #         path = Astar(i[0] + 1, i[1] + 1, chip1)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_1)
 
 # print "Netlist 1"
@@ -268,6 +270,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip3)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_3)
 
 # print "Netlist 3"
@@ -299,6 +303,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip4)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_4)
 
 # print "Netlist 4"
@@ -330,6 +336,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip5)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_5)
 
 # print "Netlist 5"
@@ -361,6 +369,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip6)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_6)
 
 # print "Netlist 6"
