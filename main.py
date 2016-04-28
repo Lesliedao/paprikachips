@@ -84,7 +84,7 @@ class Chip(object):
         for thing in self.obstacles:
             if thing[2] not in used:
                 used.append(thing[2])
-        return used
+        return len(used)
     #TODO: functie voor elk van de algoritmes
     #TODO: reset de chip
     def dijkstra_algorithm(self):
@@ -233,10 +233,11 @@ max_iterations = 100
 # Netlist 1
 iteration = 0
 paths = []
-while len(paths) < len(netlist_1) or iteration < max_iterations:
+while len(paths) < len(netlist_1) and iteration < max_iterations:
     chip1.reset()
     paths = []
     iteration += 1
+    print "Running iteration %d" % iteration
     for i in netlist_1:
         path = Astar(i[0] + 1, i[1] + 1, chip1)
         if len(path) > 0:
@@ -252,7 +253,7 @@ else:
     for wire in paths:
         cost1 += len(wire) - 1
     print "Found a solution in %d iterations with cost %d" % (iteration, cost1)
-    for i in len(netlist_1):
+    for i in range(len(netlist_1)):
         print "Path from %d to %d" % (netlist_1[i][0] + 1, netlist_1[i][1])
         print paths[i]
     print "Used %d layers" % chip1.used_layers()
