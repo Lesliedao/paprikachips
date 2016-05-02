@@ -190,69 +190,69 @@ def Astar(startgate, goalgate, chip):
                 open_list.append({"node": child, "G": G, "F": F, "parent": q})
     return []
 
-max_iterations = 1000
+max_iterations = 100
 
-# # Netlist 1
-# iteration = 0
-# paths = []
-# while len(paths) < len(netlist_1) and iteration < max_iterations:
-#     chip1.reset()
-#     paths = []
-#     iteration += 1
-#     print "Running iteration %d" % iteration
-#     for i in netlist_1:
-#         path = Astar(i[0] + 1, i[1] + 1, chip1)
-#         if len(path) > 0:
-#             paths.append(path)
-#     random.shuffle(netlist_1)
-
-# print "Netlist 1"
-# if len(paths) < len(netlist_1):
-#     print "Could not find a solution in %d iterations" % max_iterations
-# else:
-#     chip1.wires = paths[:]
-#     cost1 = 0
-#     for wire in paths:
-#         cost1 += len(wire) - 1
-#     print "Found a solution in %d iterations with cost %d" % (iteration, cost1)
-#     for i in range(len(netlist_1)):
-#         print "Path from %d to %d" % (netlist_1[i][0] + 1, netlist_1[i][1])
-#         print paths[i]
-#     print "Used %d layers" % chip1.used_layers()
-#     with open("netlist1sol.py", "w") as f:
-#         json.dump(paths, f)
-# print ""
-
-# Netlist 2
+# Netlist 1
 iteration = 0
 paths = []
-while len(paths) < len(netlist_2) and iteration < max_iterations:
-    chip2.reset()
+while len(paths) < len(netlist_1) and iteration < max_iterations:
+    chip1.reset()
     paths = []
     iteration += 1
     print "Running iteration %d" % iteration
-    for i in netlist_2:
-        path = Astar(i[0] + 1, i[1] + 1, chip2)
+    for i in netlist_1:
+        path = Astar(i[0] + 1, i[1] + 1, chip1)
         if len(path) > 0:
             paths.append(path)
-    random.shuffle(netlist_2)
+    random.shuffle(netlist_1)
 
-print "Netlist 2"
-if len(paths) < len(netlist_2):
+print "Netlist 1"
+if len(paths) < len(netlist_1):
     print "Could not find a solution in %d iterations" % max_iterations
 else:
-    chip2.wires = paths[:]
-    cost2 = 0
+    chip1.wires = paths[:]
+    cost1 = 0
     for wire in paths:
-        cost2 += len(wire) - 1
-    print "Found a solution in %d iterations with cost %d" % (iteration, cost2)
-    for i in range(len(netlist_2)):
-        print "Path from %d to %d" % (netlist_2[i][0] + 1, netlist_2[i][1])
+        cost1 += len(wire) - 1
+    print "Found a solution in %d iterations with cost %d" % (iteration, cost1)
+    for i in range(len(netlist_1)):
+        print "Path from %d to %d" % (netlist_1[i][0] + 1, netlist_1[i][1])
         print paths[i]
-    print "Used %d layers" % chip2.used_layers()
-    with open("netlist2sol.py", "w") as f:
+    print "Used %d layers" % chip1.used_layers()
+    with open("netlist1sol.py", "w") as f:
         json.dump(paths, f)
 print ""
+
+# Netlist 2
+# iteration = 0
+# paths = []
+# while len(paths) < len(netlist_2) and iteration < max_iterations:
+#     chip2.reset()
+#     paths = []
+#     iteration += 1
+#     print "Running iteration %d" % iteration
+#     for i in netlist_2:
+#         path = Astar(i[0] + 1, i[1] + 1, chip2)
+#         if len(path) > 0:
+#             paths.append(path)
+#     random.shuffle(netlist_2)
+
+# print "Netlist 2"
+# if len(paths) < len(netlist_2):
+#     print "Could not find a solution in %d iterations" % max_iterations
+# else:
+#     chip2.wires = paths[:]
+#     cost2 = 0
+#     for wire in paths:
+#         cost2 += len(wire) - 1
+#     print "Found a solution in %d iterations with cost %d" % (iteration, cost2)
+#     for i in range(len(netlist_2)):
+#         print "Path from %d to %d" % (netlist_2[i][0] + 1, netlist_2[i][1])
+#         print paths[i]
+#     print "Used %d layers" % chip2.used_layers()
+#     with open("netlist2sol.py", "w") as f:
+#         json.dump(paths, f)
+# print ""
 
 # # Netlist 3
 # iteration = 0

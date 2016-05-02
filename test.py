@@ -89,7 +89,6 @@ def Astar(startgate, goalgate, grid):
                 else:
                     continue
             break
-    for node in path:
-        print node
+    return path
 
-Astar(1, 22, grid1)
+astar_list = Astar(1, 22, grid1)
