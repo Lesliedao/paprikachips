@@ -255,7 +255,7 @@ print ""
 # if len(paths) < len(netlist_2):
 #     print "Could not find a solution in %d iterations" % max_iterations
 # else:
-#     # Kopieër lijst van paths om wires in op te slaan
+#     # Kopieer lijst van paths om wires in op te slaan
 #     chip2.wires = paths[:]
 #     # Zet kosten op 0
 #     cost2 = 0
