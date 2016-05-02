@@ -204,6 +204,11 @@ while len(paths) < len(netlist_1) and iteration < max_iterations:
         path = Astar(i[0] + 1, i[1] + 1, chip1)
         if len(path) > 0:
             paths.append(path)
+<<<<<<< HEAD
+=======
+        else:
+            break
+>>>>>>> 073d2467438e94e2302e3d3611b33d2979921478
     random.shuffle(netlist_1)
 
 print "Netlist 1"
@@ -223,6 +228,7 @@ else:
         json.dump(paths, f)
 print ""
 
+<<<<<<< HEAD
 # Netlist 2
 # iteration = 0
 # paths = []
@@ -251,6 +257,56 @@ print ""
 #         print paths[i]
 #     print "Used %d layers" % chip2.used_layers()
 #     with open("netlist2sol.py", "w") as f:
+=======
+# # Netlist 2
+# iteration = 0
+# paths = []
+# # Zolang de netlist nog niet geheel getraverseerd is en het maximal aantal iteraties nog niet is bereikt
+# while len(paths) < len(netlist_2) and iteration < max_iterations:
+#     # Reset de chip om eerere mislukte paden weg te halen
+#     chip2.reset()
+#     # Maak de padenlijst leeg
+#     paths = []
+#     # Voeg een iteratie toe en print het nummer ervan
+#     iteration += 1
+#     print "Running iteration %d" % iteration
+#     # Zolang i(een paar van nodes waartussen je een pad zoekt) in de netlist zit
+#     for i in netlist_2:
+#         # Roep functie Astar aan voor startnode, goalnode en grid
+#         path = Astar(i[0] + 1, i[1] + 1, chip2)
+#         # Als er een pad is
+#         if len(path) > 0:
+#             #  Voeg deze toe aan de padenlijst
+#             paths.append(path)
+#         else:
+#             break
+#     # Shuffle willekeurig om nieuwe paden te vinden
+#     random.shuffle(netlist_2)
+
+# print "Netlist 2"
+# # Als er minder paden zijn gevonden dan er nodecombinaties in de netlist zijn 
+# if len(paths) < len(netlist_2):
+#     print "Could not find a solution in %d iterations" % max_iterations
+# else:
+#     # Kopieer lijst van paths om wires in op te slaan
+#     chip2.wires = paths[:]
+#     # Zet kosten op 0
+#     cost2 = 0
+#     # Bereken kosten voor elke gelegde wire
+#     for wire in paths:
+#         cost2 += len(wire) - 1
+#     print "Found a solution in %d iterations with cost %d" % (iteration, cost2)
+#     # Voor elke nodecombinatie in netlist 2
+#     for i in range(len(netlist_2)):
+#         # Print de oplossing (pad van sart naar goal)
+#         print "Path from %d to %d" % (netlist_2[i][0] + 1, netlist_2[i][1])
+#         print paths[i]
+#     # Roep usd_layers aan en print het aantal layers
+#     print "Used %d layers" % chip2.used_layers()
+#     # Maak bestand aan met oplossingen voor visualisatie
+#     with open("netlist2sol.py", "w") as f:
+#         # Stop de paden hierin
+>>>>>>> 073d2467438e94e2302e3d3611b33d2979921478
 #         json.dump(paths, f)
 # print ""
 
@@ -266,6 +322,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip3)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_3)
 
 # print "Netlist 3"
@@ -297,6 +355,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip4)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_4)
 
 # print "Netlist 4"
@@ -328,6 +388,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip5)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_5)
 
 # print "Netlist 5"
@@ -359,6 +421,8 @@ print ""
 #         path = Astar(i[0] + 1, i[1] + 1, chip6)
 #         if len(path) > 0:
 #             paths.append(path)
+#         else:
+#             break
 #     random.shuffle(netlist_6)
 
 # print "Netlist 6"

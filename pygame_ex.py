@@ -4,17 +4,17 @@
 # Programma om de data te visualiseren.
 # Werkt met python 3. Om te runnen, gebruik: python3 ./pygame_ex.py
 ##
- 
+
 import pygame
 import math
 from grid_info import *
 from test import *
 from netlist1sol import *
 import time
- 
-# De game engine initialiseren. 
+
+# De game engine initialiseren.
 pygame.init()
- 
+
 # Variabelen voor de kleuren.
 GREY2 = (120, 120, 120)
 BLACK = (0,0,0)
@@ -22,7 +22,7 @@ GREY = (200,200,200)
 WHITE = (255, 255, 255)
 RED = (239,138,98)
 BLUE = (0,99,104)
- 
+
 # Stelt de groote van elementen van de visualisatie vast.
 screenlength = 500
 screenwidth = 400
@@ -36,24 +36,24 @@ block_am_y = 12 #16
 
 size = (screenwidth, screenlength)
 screen = pygame.display.set_mode(size)
- 
+
 # Stelt de naam van het scherm vast.
 pygame.display.set_caption("Pygame: A* pathfinder for chips and circuits")
- 
+
 # Loop todat de gebruiker het scherm afsluit.
 exit = False
 clock = pygame.time.Clock()
 while not exit:
- 
+
     # Zorgt ervoor dat de loop stopt als de gebruiker het scherm afsluit.
-    for event in pygame.event.get(): 
-        if event.type == pygame.QUIT: 
-            exit = True  
- 
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            exit = True
+
     # Zet de achtergrond van de visualisatie op wit.
     screen.fill(WHITE)
 
-    # Maakt de verschillende teksten op het scherm aan. 
+    # Maakt de verschillende teksten op het scherm aan.
     font_title = pygame.font.SysFont('Helvetica', 30, True, False)
     font_other = pygame.font.SysFont('Helvetica', 14, True, False)
     font_grid = pygame.font.SysFont('Helvetica', grid_font_size, True, False)
@@ -63,7 +63,7 @@ while not exit:
 
     line_length_hor = block_am_x * block_size
     line_length_vert = block_am_y * block_size
-    
+
     # Bepalen van de banners rond de grid.
     banner_left = (screenwidth - line_length_hor) / 2 # 65
     banner_right = screenwidth - banner_left # 335
@@ -100,6 +100,7 @@ while not exit:
         screen.blit(text_next, [65 + 22, (banner_top + line_length_vert + 20)])
         screen.blit(text_prev, [(screenwidth - 195) + 22, (banner_top + line_length_vert + 20)])
 
+
         # Zet de threads op de grid. 
         for i in range (len (solution2) -1):
             for j in range (len (solution2[i]) - 1):
@@ -113,8 +114,8 @@ while not exit:
                 node_number = font_grid.render("%d" %i[0], True, BLACK)
                 pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top+ (i[2] * block_size))), node_size, 0)
                 screen.blit(node_number, [int(banner_left + (i[1] * block_size)) - 4, int(banner_top+ (i[2] * block_size)) - 4])
-                
-    # Verandert de layer als er op de next en previous buttons wordt geklikt. 
+
+    # Verandert de layer als er op de next en previous buttons wordt geklikt.
     def button_pressed():
         global current_layer
         # Als "Next layer" wordt geklikt.
@@ -124,27 +125,25 @@ while not exit:
             if distance(pygame.mouse.get_pos(), (65, banner_top + line_length_vert + 20)) < 14:
                 current_layer += 1
         # Als "Previous layer" wordt geklikt.
-        if current_layer == 0:
-            pass
-        else:
+        if current_layer != 0:
             if distance(pygame.mouse.get_pos(), ((screenwidth - 195), (banner_top + line_length_vert + 20))) < 14:
                 current_layer -= 1
         print (current_layer)
 
-            
+
     # Maakt het daadwerkelijke grid met het meegegeven aantal blokjes.
     make_grid(block_am_x, block_am_y, grid1)
 
-    # Checkt of er geklikt wordt. 
+    # Checkt of er geklikt wordt.
     if event.type == pygame.MOUSEBUTTONDOWN:
         button_pressed()
         time.sleep(0.15)
-    
+
     # Geeft de images weer op het scherm.
     pygame.display.flip()
- 
+
     # Iets om later zorgen over te maken (limits the while loop to a max of 60 times per second).
     clock.tick(60)
- 
+
 # Stopt de visualisatie.
 pygame.quit()
