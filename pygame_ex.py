@@ -101,11 +101,11 @@ while not exit:
         screen.blit(text_prev, [(screenwidth - 195) + 22, (banner_top + line_length_vert + 20)])
 
 
-        # Zet de threads op de grid. 
-        for i in range (len (solution2) -1):
-            for j in range (len (solution2[i]) - 1):
-                if solution2[i][j][2] == current_layer:
-                    pygame.draw.line(screen, BLUE, (int(banner_left + (solution2[i][j][0] * block_size)), int(banner_top + (solution2[i][j][1] * block_size))), (int(banner_left + (solution2[i][j+1][0] * block_size)), int(banner_top + (solution2[i][j+1][1] * block_size))), 3)
+        # Zet de threads op de grid.
+        for i in range (len (solution) -1):
+            for j in range (len (solution[i]) - 1):
+                if solution[i][j][2] == current_layer:
+                    pygame.draw.line(screen, BLUE, (int(banner_left + (solution[i][j][0] * block_size)), int(banner_top + (solution[i][j][1] * block_size))), (int(banner_left + (solution[i][j+1][0] * block_size)), int(banner_top + (solution[i][j+1][1] * block_size))), 3)
 
 
         # Zet de nodes met nummers op de grid.
