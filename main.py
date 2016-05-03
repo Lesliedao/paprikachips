@@ -204,11 +204,8 @@ while len(paths) < len(netlist_1) and iteration < max_iterations:
         path = Astar(i[0] + 1, i[1] + 1, chip1)
         if len(path) > 0:
             paths.append(path)
-<<<<<<< HEAD
-=======
         else:
             break
->>>>>>> 073d2467438e94e2302e3d3611b33d2979921478
     random.shuffle(netlist_1)
 
 print "Netlist 1"
@@ -228,7 +225,6 @@ else:
         json.dump(paths, f)
 print ""
 
-<<<<<<< HEAD
 # Netlist 2
 # iteration = 0
 # paths = []
@@ -257,7 +253,7 @@ print ""
 #         print paths[i]
 #     print "Used %d layers" % chip2.used_layers()
 #     with open("netlist2sol.py", "w") as f:
-=======
+
 # # Netlist 2
 # iteration = 0
 # paths = []
@@ -284,7 +280,7 @@ print ""
 #     random.shuffle(netlist_2)
 
 # print "Netlist 2"
-# # Als er minder paden zijn gevonden dan er nodecombinaties in de netlist zijn 
+# # Als er minder paden zijn gevonden dan er nodecombinaties in de netlist zijn
 # if len(paths) < len(netlist_2):
 #     print "Could not find a solution in %d iterations" % max_iterations
 # else:
@@ -306,7 +302,6 @@ print ""
 #     # Maak bestand aan met oplossingen voor visualisatie
 #     with open("netlist2sol.py", "w") as f:
 #         # Stop de paden hierin
->>>>>>> 073d2467438e94e2302e3d3611b33d2979921478
 #         json.dump(paths, f)
 # print ""
 
