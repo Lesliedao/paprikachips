@@ -1,4 +1,5 @@
 import math
+from grid_info import netlist_1
 
 def manhattan(x, y):
     x1, x2, x3 = x
@@ -11,7 +12,7 @@ def manhattan(x, y):
 def get_coord(gate, grid):
     for i in grid:
         if i[0] == gate:
-            return (i[1], i[2], 0)
+            return (i[1], i[2], 3)
 
 
 grid1 = [(1, 1, 1), (2, 6, 1), (3, 10, 1), (4, 15, 1), (5, 3, 2), (6, 12, 2), (7, 14, 2), (8, 12, 3), (9, 8, 4),
@@ -91,4 +92,8 @@ def Astar(startgate, goalgate, grid):
             break
     return path
 
-astar_list = Astar(1, 22, grid1)
+# astar_list = Astar(1, 22, grid1)
+
+netlist_1 = sorted(netlist_1, key = lambda i: manhattan(get_coord(i[0] + 1, grid1), get_coord(i[1] + 1, grid1)))
+
+print netlist_1

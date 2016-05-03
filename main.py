@@ -193,6 +193,7 @@ def Astar(startgate, goalgate, chip):
 max_iterations = 100
 
 # Netlist 1
+netlist_1 = sorted(netlist_1, key = lambda i: manhattan(get_coord(i[0] + 1, grid1), get_coord(i[1] + 1, grid1)))
 iteration = 0
 paths = []
 while len(paths) < len(netlist_1) and iteration < max_iterations:
