@@ -8,8 +8,8 @@
 import pygame
 import math
 from grid_info import *
-from test import *
-from netlist1sol import *
+# from test import *
+from netlist2sol import *
 import time
 
 # De game engine initialiseren.
