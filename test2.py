@@ -28,8 +28,8 @@ class Chip(object):
         self.obstacles = []
         for gate in self.grid:
             name, x, y = gate
-            self.layers[0][y][x] = name
-            self.obstacles.append((x, y, 0))
+            self.layers[3][y][x] = name
+            self.obstacles.append((x, y, 3))
     # # Start een nieuw draad.
     # def add_new_wire(self, x, y, z = 0):
     #     self.wires.append(Wire(x, y, z))
@@ -40,7 +40,7 @@ class Chip(object):
     #     else:
             # self.wires[wire_index].extend_wire(x, y, z)
     # Functie om de gates aan de chip toe te voegen.
-    def add_gate(self, gate, x, y, z = 0):
+    def add_gate(self, gate, x, y, z = 3):
         if (x, y, z) in self.obstacles:
             print "Obstacle detected. Adding gate aborted."
         else:
@@ -69,7 +69,7 @@ class Chip(object):
         for gate in self.grid:
             name, x, y = gate
             self.layers[0][y][x] = name
-            self.obstacles.append((x, y, 0))
+            self.obstacles.append((x, y, 3))
     def used_layers(self):
         used = []
         for thing in self.obstacles:
@@ -112,7 +112,7 @@ def manhattan(x, y):
 def get_coord(gate, grid):
     for i in grid:
         if i[0] == gate:
-            return (i[1], i[2], 0)
+            return (i[1], i[2], 3)
 
 # Out of bounds functie
 def out_of_bounds(x, y, z, width, height, n_layers):
@@ -201,7 +201,7 @@ def Astar(startgate, goalgate, chip, netlist):
                     G = q["G"] + 1
                     F = G + manhattan(child, goal)
                     open_list.append({"node": child, "G": G, "F": F, "parent": q})
-        else:
+        if not open_list:
             # Genereer toch kinderen, maar dan zonder obstakelcheck, behalve als het een gate is
             # North child
             if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_gate_only:
@@ -266,7 +266,7 @@ max_iterations = 1000
 #             paths.append(path)
 #         else:
 #             break
-#
+
 #     if len(paths) == len(netlist_1):
 #         its = 0
 #         while any([x == "verwijderd" for x in paths]) and its < 200:
@@ -278,11 +278,11 @@ max_iterations = 1000
 #                     if len(path) > 0:
 #                         paths[i] = path
 #             random.shuffle(paths)
-#
+
 #     random.shuffle(netlist_1)
 #     if any([x == "verwijderd" for x in paths]):
 #         continue
-#
+
 # print "Netlist 1"
 # if len(paths) < len(netlist_1):
 #     print "Could not find a solution in %d iterations" % max_iterations
@@ -324,7 +324,7 @@ max_iterations = 1000
 #             paths.append(path)
 #         else:
 #             break
-#
+
 #     if len(paths) == len(netlist_2):
 #         its = 0
 #         while any([x == "verwijderd" for x in paths]) and its < 200:
@@ -336,12 +336,12 @@ max_iterations = 1000
 #                     if len(path) > 0:
 #                         paths[i] = path
 #             random.shuffle(paths)
-#
+
 #     # Shuffle willekeurig om nieuwe paden te vinden
 #     random.shuffle(netlist_2)
 #     if any([x == "verwijderd" for x in paths]):
 #         continue
-#
+
 # print "Netlist 2"
 # # Als er minder paden zijn gevonden dan er nodecombinaties in de netlist zijn
 # if len(paths) < len(netlist_2):
