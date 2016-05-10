@@ -128,7 +128,6 @@ while not exit:
         if current_layer != 0:
             if distance(pygame.mouse.get_pos(), ((screenwidth - 195), (banner_top + line_length_vert + 20))) < 14:
                 current_layer -= 1
-        print (current_layer)
 
 
     # Maakt het daadwerkelijke grid met het meegegeven aantal blokjes.
