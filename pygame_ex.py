@@ -9,7 +9,7 @@ import pygame
 import math
 from grid_info import *
 # from test import *
-from netlist2sol import *
+from netlist1sol import *
 import time
 
 # De game engine initialiseren.
@@ -28,7 +28,7 @@ screenlength = 500
 screenwidth = 400
 block_size = 22
 grid_font_size = 9
-current_layer = 0
+current_layer = 3
 node_size = 8
 
 block_am_x = 17 #17
@@ -109,7 +109,7 @@ while not exit:
 
 
         # Zet de nodes met nummers op de grid.
-        if current_layer == 0:
+        if current_layer == 3:
             for i in node_list:
                 node_number = font_grid.render("%d" %i[0], True, BLACK)
                 pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top+ (i[2] * block_size))), node_size, 0)
