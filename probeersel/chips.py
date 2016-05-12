@@ -212,7 +212,6 @@ def Astar(startgate, goalgate):
 
     return []
 
-
 ########################
 # mainnetlist oplossen #
 ########################
@@ -225,6 +224,7 @@ if initial_sort == "Y":
     mainnetlist = sorted(mainnetlist, key = lambda i: manhattan(get_coord(i[0] + 1), get_coord(i[1] + 1)))
 else:
     random.shuffle(mainnetlist)
+oldnetlist = mainnetlist
 
 iteration = 0
 while len(paths) < maxconnections and iteration < max_iterations:# and not any(x == "verwijderd" for x in paths):
@@ -254,7 +254,10 @@ while len(paths) < maxconnections and iteration < max_iterations:# and not any(x
     if len(paths) > len(best_so_far):# and not any(i == "verwijderd" for i in paths):
         iteration = 0
         best_so_far = paths[:]
+        oldnetlist = mainnetlist
         print "Current best: %d connections" % len(best_so_far)
+    else:
+        mainnetlist = oldnetlist
 
     if shufflemethod == "H":
         # # # Kies twee willekeurige elementen in de netlist om te verwisselen (Hill climber)
@@ -285,7 +288,5 @@ with open("solution.py", "w") as f:
     f.write("# Solution for netlist " + str(netlistnum) + "\n")
     f.write("solution = ")
     json.dump(best_so_far, f)
-
-
 
 subprocess.Popen("python pygame_onderaan.py " + str(mainwidth - 1) + " " + str(mainheight - 1), shell = True)
