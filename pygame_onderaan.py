@@ -32,12 +32,19 @@ grid_font_size = 9
 current_layer = 0
 node_size = 8
 
+<<<<<<< HEAD
 block_am_x = int(sys.argv[1])#17 #17
 block_am_y = int(sys.argv[2])#12 #16
 if block_am_y == 12:
     maingrid = grid_info.grid1
 else:
     maingrid = grid_info.grid2
+=======
+solution = solution2
+
+block_am_x = 17 #17
+block_am_y = 12 #16
+>>>>>>> 3ff87a7e85c02c04631ffd4aa4a1489c0236c4bf
 
 size = (screenwidth, screenlength)
 screen = pygame.display.set_mode(size)
