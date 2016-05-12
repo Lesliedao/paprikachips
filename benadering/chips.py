@@ -7,7 +7,7 @@ from sets import Set
 
 import grid_info
 
-# De breedte van elke chip is 18
+# De breedte van elke chip is 18.
 mainwidth = 18
 
 ##############
@@ -67,7 +67,7 @@ while True:
 ############
 # Functies #
 ############
-# Functie om de obstacles set te resetten (leeg te maken) voor meer iteraties
+# Functie om de obstacles set te resetten (leeg te maken) voor meer iteraties.
 def reset(obs):
     obs.clear()
     for gate in maingrid:
@@ -75,27 +75,27 @@ def reset(obs):
         gatelayer[y][x] = name
         obstacles.add((x, y, 0))
 
-# Functie om de manhattan afstand te bepalen tussen a en b
+# Functie om de manhattan afstand te bepalen tussen a en b.
 def manhattan(a, b):
     x1, y1, z1 = a
     x2, y2, z2 = b
 
     return math.fabs(x1 - x2) + math.fabs(y1 - y2) + math.fabs(z1 - z2)
 
-# Functie om de coordinaten van een gate op de chip te bepalen
+# Functie om de coordinaten van een gate op de chip te bepalen.
 def get_coord(gate):
     for i in maingrid:
         if i[0] == gate:
             return (i[1], i[2], 0)
 
-# Functie om te bepalen of een coordinaten tripel (x, y, z) op de chip zit
+# Functie om te bepalen of een coordinaten tripel (x, y, z) op de chip zit.
 def on_chip(coord):
     x, y, z = coord
     if x < 0 or x >= mainwidth or y < 0 or y >= mainheight or z < 0 or z >= maxlayers:
         return False
     return True
 
-# Functie om de neighbours van een coordinaat te genereren
+# Functie om de neighbours van een coordinaat te genereren.
 def generate_neighbours(coord, obs):
     x, y, z = coord
     neighs = []
@@ -130,19 +130,19 @@ def generate_neighbours(coord, obs):
 ###########################
 # Chip/netlist variabelen #
 ###########################
-# Het maximum aantal lagen op de chip
+# Het maximum aantal lagen op de chip.
 maxlayers = 8
 
-# Het aantal verbindingen dat gelegd moet worden volgens de netlist
+# Het aantal verbindingen dat gelegd moet worden volgens de netlist.
 maxconnections = len(mainnetlist)
 
-# Nested list met waar de gates zich bevinden op de hoofdlaag
+# Nested list met waar de gates zich bevinden op de hoofdlaag.
 gatelayer = [[0 for i in range(mainwidth)] for i in range(mainheight)]
 
-# Obstacles is een set, voor snellere opzoektijden en houdt bij op welke coordinaten een obstakel is
+# Obstacles is een set, voor snellere opzoektijden en houdt bij op welke coordinaten een obstakel is.
 obstacles = Set()
 
-# Reset plaatst in dit geval de gates in de obstacles set
+# Reset plaatst in dit geval de gates in de obstacles set.
 reset(obstacles)
 
 ####################

@@ -16,8 +16,7 @@ import json
 from grid_info import *
 
 class Chip(object):
-    # Houd het maximum aantal lagen, de lagen zelf, breedte en hoogte en de
-    # draden bij.
+    # Houd het maximum aantal lagen, de lagen zelf, breedte en hoogte en de draden bij.
     def __init__(self, width, height, grid):
         self.maxlayers = 8
         self.layers = [[[0 for x in range(width)] for x in range(height)] for x in range (self.maxlayers)]
@@ -76,7 +75,7 @@ class Chip(object):
             if thing[2] not in used:
                 used.append(thing[2])
         return len(used)
-    #TODO: functie voor elk van de algoritmes
+    #TODO: functie voor elk van de algoritmes.
     # def dijkstra_algorithm(self):
     #     pass
     # def lee_algorithm(self):
@@ -93,7 +92,7 @@ class Chip(object):
 #     def extend_wire(self, x, y, z):
 #         self.path.append((x, y, z))
 
-# Chips definieren
+# Chips definieren.
 chip1 = Chip(18, 13, grid1)
 chip2 = Chip(18, 13, grid1)
 chip3 = Chip(18, 13, grid1)
@@ -108,13 +107,13 @@ def manhattan(x, y):
 
     return math.fabs(x1 - y1) + math.fabs(x2 - y2) + math.fabs(x3 - y3)
 
-# Bepaal de coordinaten van een gate in een grid
+# Bepaal de coordinaten van een gate in een grid.
 def get_coord(gate, grid):
     for i in grid:
         if i[0] == gate:
             return (i[1], i[2], 3)
 
-# Out of bounds functie
+# Out of bounds functie.
 def out_of_bounds(x, y, z, width, height, n_layers):
     if x < 0 or x >= width or y < 0 or y >= height or z < 0 or z >= n_layers:
         return True
@@ -134,13 +133,13 @@ def depth_first(startgate, goalgate, chip, path=[]):
     return None
 
 def Astar(startgate, goalgate, chip, netlist):
-    # Initialiseer een open list
+    # Initialiseer een open list.
     open_list = []
-    # Initialiseer een closed list
+    # Initialiseer een closed list.
     closed_list = []
     grid = chip.grid
 
-    # Plaats de start node in de open list, waarvan de F op 0 kan blijven
+    # Plaats de start node in de open list, waarvan de F op 0 kan blijven.
     start = {"node": get_coord(startgate, grid), "G": 0, "F": 0, "parent": None}
     goal = get_coord(goalgate, grid)
     open_list.append(start)
@@ -149,10 +148,9 @@ def Astar(startgate, goalgate, chip, netlist):
     obstacles_filtered = [x for x in obstacles if x != goal]
     obstacles_gate_only = [x for x in obstacles if x != goal and chip.layers[x[2]][x[1]][x[0]] != 0]
 
-    # Zolang de open list niet leeg is
+    # Zolang de open list niet leeg is.
     while open_list:
-        # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit
-        # open_list
+        # Zoek de node met de laagste F in open_list, noem deze q en pop deze uit.
         q = open_list.pop(open_list.index(min(open_list, key = lambda x: x["F"])))
         closed_list.append(q)
 
@@ -167,7 +165,7 @@ def Astar(startgate, goalgate, chip, netlist):
             path.reverse()
             return path
 
-        # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q
+        # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q.
         children = []
         # North child
         if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_filtered:
@@ -202,34 +200,34 @@ def Astar(startgate, goalgate, chip, netlist):
                     F = G + manhattan(child, goal)
                     open_list.append({"node": child, "G": G, "F": F, "parent": q})
         if not open_list:
-            # Genereer toch kinderen, maar dan zonder obstakelcheck, behalve als het een gate is
-            # North child
+            # Genereer toch kinderen, maar dan zonder obstakelcheck, behalve als het een gate is.
+            # North child.
             if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_gate_only:
                 children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
-            # East child
+            # East child.
             if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
                 children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
-            # South child
+            # South child.
             if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_gate_only:
                 children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
-            # West child
+            # West child.
             if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
                 children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
-            # Up child
+            # Up child.
             if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_gate_only:
                 children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
-            # Down child
+            # Down child.
             if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_gate_only:
                 children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
-            # Kies een kind
+            # Kies een kind.
             baby = min(children, key = lambda x: manhattan(x, goal))
-            # verwijder het obstakel (verwijder het HELE draad)
+            # verwijder het obstakel (verwijder het HELE draad).
             global paths
             for sol in paths:
                 if type(sol) is not str:
                     if baby in sol:
                         break
-            # In paths, verbindt een string aan het verwijderde pad die zegt: verwijderd (sol is het obstakel draad)
+            # In paths, verbindt een string aan het verwijderde pad die zegt: verwijderd (sol is het obstakel draad).
             paths[paths.index(sol)] = "verwijderd"
 
             for i in range(1, len(sol) - 1):
@@ -237,12 +235,12 @@ def Astar(startgate, goalgate, chip, netlist):
                     chip.obstacles.remove(sol[i])
                 except ValueError:
                     pass
-            # Ga verder
+            # Ga verder.
             G = q["G"] + 1
             F = G + manhattan(baby, goal)
             open_list.append({"node": baby, "G": G, "F": F, "parent": q})
 
-            # Voeg de verwijderde draden weer toe
+            # Voeg de verwijderde draden weer toe.
             # for i in range(len(paths)):
             #     if paths[i] == "verwijderd":
             #         paths[i] = Astar(netlist[i][0] + 1, netlist[i][1] + 1, chip, netlist)
@@ -251,7 +249,7 @@ def Astar(startgate, goalgate, chip, netlist):
 
 max_iterations = 1000
 
-# # Netlist 1
+# # Netlist 1.
 # netlist_1 = sorted(netlist_1, key = lambda i: manhattan(get_coord(i[0] + 1, grid1), get_coord(i[1] + 1, grid1)))
 # iteration = 0
 # paths = []
@@ -301,7 +299,7 @@ max_iterations = 1000
 #         json.dump(paths, f)
 # print ""
 
-# # Netlist 2
+# # Netlist 2.
 # netlist_2 = sorted(netlist_2, key = lambda i: manhattan(get_coord(i[0] + 1, grid1), get_coord(i[1] + 1, grid1)))
 # iteration = 0
 # paths = []
@@ -369,7 +367,7 @@ max_iterations = 1000
 #         json.dump(paths, f)
 # print ""
 
-# Netlist 3
+# Netlist 3.
 netlist_3 = sorted(netlist_3, key = lambda i: manhattan(get_coord(i[0] + 1, grid1), get_coord(i[1] + 1, grid1)))
 iteration = 0
 paths = []
@@ -420,7 +418,7 @@ else:
         json.dump(paths, f)
 print ""
 
-# # Netlist 4
+# # Netlist 4.
 # netlist_4 = sorted(netlist_4, key = lambda i: manhattan(get_coord(i[0] + 1, grid2), get_coord(i[1] + 1, grid2)))
 # iteration = 0
 # paths = []
@@ -471,7 +469,7 @@ print ""
 #         json.dump(paths, f)
 # print ""
 
-# # Netlist 5
+# # Netlist 5.
 # netlist_5 = sorted(netlist_5, key = lambda i: manhattan(get_coord(i[0] + 1, grid2), get_coord(i[1] + 1, grid2)))
 # iteration = 0
 # paths = []
@@ -522,7 +520,7 @@ print ""
 #         json.dump(paths, f)
 # print ""
 
-# # Netlist 6
+# # Netlist 6.
 # netlist_6 = sorted(netlist_6, key = lambda i: manhattan(get_coord(i[0] + 1, grid2), get_coord(i[1] + 1, grid2)))
 # iteration = 0
 # paths = []
@@ -572,40 +570,3 @@ print ""
 #         f.write("solution = ")
 #         json.dump(paths, f)
 # print ""
-
-# # Berekenen van de ondergrens met behulp van de manhattan distance.
-# # Ondergrens netlist 1
-# wire_length = 0
-# for i in netlist_1:
-#     wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
-# print "Ondergrens netlist 1: %d" % wire_length
-#
-# # Ondergrens netlist 2
-# wire_length = 0
-# for i in netlist_2:
-#     wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
-# print "Ondergrens netlist 2: %d" % wire_length
-#
-# # Ondergrens netlist 3
-# wire_length = 0
-# for i in netlist_3:
-#     wire_length += manhattan(get_coord(i[0]+1, grid1), get_coord(i[1]+1, grid1))
-# print "Ondergrens netlist 3: %d" % wire_length
-#
-# # Ondergrens netlist 4
-# wire_length = 0
-# for i in netlist_4:
-#     wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
-# print "Ondergrens netlist 4: %d" % wire_length
-#
-# # Ondergrens netlist 5
-# wire_length = 0
-# for i in netlist_5:
-#     wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
-# print "Ondergrens netlist 5: %d" % wire_length
-#
-# # Ondergrens netlist 6
-# wire_length = 0
-# for i in netlist_6:
-#     wire_length += manhattan(get_coord(i[0]+1, grid2), get_coord(i[1]+1, grid2))
-# print "Ondergrens netlist 6: %d" % wire_length

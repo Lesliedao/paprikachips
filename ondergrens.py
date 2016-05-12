@@ -8,7 +8,7 @@ def manhattan(x, y):
 
     return math.fabs(x1 - y1) + math.fabs(x2 - y2) + math.fabs(x3 - y3)
 
-# Bepaal de coordinaten van een gate in een grid
+# Bepaal de coordinaten van een gate in een grid.
 def get_coord(gate, grid):
     for i in grid:
         if i[0] == gate:
