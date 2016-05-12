@@ -29,10 +29,10 @@ screenlength = 500
 screenwidth = 400
 block_size = 22
 grid_font_size = 9
-current_layer = 3
+current_layer = 0
 node_size = 8
 
-solution = solution3
+solution = solution2
 
 block_am_x = 17 #17
 block_am_y = 12 #16
@@ -103,20 +103,27 @@ while not exit:
         screen.blit(text_next, [65 + 22, (banner_top + line_length_vert + 20)])
         screen.blit(text_prev, [(screenwidth - 195) + 22, (banner_top + line_length_vert + 20)])
 
-
         # Zet de threads op de grid.
         for i in range (len (solution) -1):
             for j in range (len (solution[i]) - 1):
                 if solution[i][j][2] == current_layer:
                     pygame.draw.line(screen, BLUE, (int(banner_left + (solution[i][j][0] * block_size)), int(banner_top + (solution[i][j][1] * block_size))), (int(banner_left + (solution[i][j+1][0] * block_size)), int(banner_top + (solution[i][j+1][1] * block_size))), 3)
 
-
         # Zet de nodes met nummers op de grid.
         if current_layer == 0:
             for i in node_list:
                 node_number = font_grid.render("%d" %i[0], True, BLACK)
-                pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top+ (i[2] * block_size))), node_size, 0)
+                pygame.draw.circle(screen, RED, (int(banner_left + (i[1] * block_size)), int(banner_top + (i[2] * block_size))), node_size, 0)
                 screen.blit(node_number, [int(banner_left + (i[1] * block_size)) - 4, int(banner_top+ (i[2] * block_size)) - 4])
+
+        # Laat zien waar de threads naar boven of naar beneden gaan.
+        for i in range (len (solution) -1):
+            for j in range (len (solution[i]) - 1):
+                if solution[i][j][2] == current_layer:
+                    if solution[i][j+1][2] != current_layer:
+                        pygame.draw.circle(screen, BLUE, (int(banner_left + (solution[i][j+1][0] * block_size)), int(banner_top + (solution[i][j+1][1] * block_size))), node_size - 4, 0)
+                    if solution[i][j-1][2] != current_layer:
+                        pygame.draw.circle(screen, BLUE, (int(banner_left + (solution[i][j-1][0] * block_size)), int(banner_top + (solution[i][j-1][1] * block_size))), node_size - 4, 0)
 
     # Verandert de layer als er op de next en previous buttons wordt geklikt.
     def button_pressed():
