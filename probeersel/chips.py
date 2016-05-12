@@ -218,7 +218,7 @@ def Astar(startgate, goalgate):
 best_so_far = []
 paths = []
 indices = [i for i in range(maxconnections)]
-max_iterations = 100
+max_iterations = 500
 
 if initial_sort == "Y":
     mainnetlist = sorted(mainnetlist, key = lambda i: manhattan(get_coord(i[0] + 1), get_coord(i[1] + 1)))
