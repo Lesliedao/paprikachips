@@ -7,9 +7,10 @@
 
 import pygame
 import math
-from grid_info import *
+import sys
+import grid_info
 # from test import *
-from netlist1sol import *
+from solution import *
 import time
 
 # De game engine initialiseren.
@@ -31,8 +32,12 @@ grid_font_size = 9
 current_layer = 0
 node_size = 8
 
-block_am_x = 17 #17
-block_am_y = 12 #16
+block_am_x = int(sys.argv[1])#17 #17
+block_am_y = int(sys.argv[2])#12 #16
+if block_am_y == 12:
+    maingrid = grid_info.grid1
+else:
+    maingrid = grid_info.grid2
 
 size = (screenwidth, screenlength)
 screen = pygame.display.set_mode(size)
@@ -140,7 +145,7 @@ while not exit:
 
 
     # Maakt het daadwerkelijke grid met het meegegeven aantal blokjes.
-    make_grid(block_am_x, block_am_y, grid1)
+    make_grid(block_am_x, block_am_y, maingrid)
 
     # Checkt of er geklikt wordt.
     if event.type == pygame.MOUSEBUTTONDOWN:
