@@ -102,7 +102,6 @@ class Chip(object):
             if thing[2] not in used:
                 used.append(thing[2])
         return len(used)
-<<<<<<< HEAD
 
 # Chips definieren
 mainchip = Chip(mainwidth, mainheight, maingrid)
