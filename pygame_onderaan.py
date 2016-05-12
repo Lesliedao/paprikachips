@@ -31,6 +31,8 @@ grid_font_size = 9
 current_layer = 0
 node_size = 8
 
+solution = solution2
+
 block_am_x = 17 #17
 block_am_y = 12 #16
 
