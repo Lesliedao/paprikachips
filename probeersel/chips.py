@@ -2,6 +2,7 @@ import math
 import random
 import json
 import sys
+import subprocess
 from sets import Set
 
 import grid_info
@@ -13,9 +14,11 @@ mainwidth = 18
 # User input #
 ##############
 netlistprompt = "Which netlist (1-6)? > "
-methodprompt = "Hill climbing (H) or random shuffle (R)? > "
+methodprompt = "Hill climbing (H) or random shuffle (R)? >"
+sortprompt = "Would you like to sort the initial netlist (Y/N)? >"
 error_wrong_input = "Please enter a number (1-6)"
 error_wrong_method = "Please enter either H or R"
+error_wrong_sort = "Please enter either Y or N"
 
 while True:
     rawnetlist = raw_input(netlistprompt)
@@ -43,11 +46,22 @@ while True:
 # Methode #
 ###########
 while True:
-    shufflemethod = raw_input(methodprompt)
+    shufflemethod = raw_input(methodprompt).upper()
     if shufflemethod == "H" or shufflemethod == "R":
         break
     else:
         print error_wrong_method
+        sys.exit(1)
+
+#################
+# Initiele sort #
+#################
+while True:
+    initial_sort = raw_input(sortprompt).upper()
+    if initial_sort == "Y" or initial_sort == "N":
+        break
+    else:
+        print error_wrong_sort
         sys.exit(1)
 
 ############
@@ -205,9 +219,13 @@ def Astar(startgate, goalgate):
 best_so_far = []
 paths = []
 indices = [i for i in range(maxconnections)]
-max_iterations = 200
+max_iterations = 100
 
-mainnetlist = sorted(mainnetlist, key = lambda i: manhattan(get_coord(i[0] + 1), get_coord(i[1] + 1)))
+if initial_sort == "Y":
+    mainnetlist = sorted(mainnetlist, key = lambda i: manhattan(get_coord(i[0] + 1), get_coord(i[1] + 1)))
+else:
+    random.shuffle(mainnetlist)
+
 iteration = 0
 while len(paths) < maxconnections and iteration < max_iterations:# and not any(x == "verwijderd" for x in paths):
     iteration += 1
@@ -268,4 +286,6 @@ with open("solution.py", "w") as f:
     f.write("solution = ")
     json.dump(best_so_far, f)
 
-execfile("pygame_onderaan.py")
+
+
+subprocess.Popen("python pygame_onderaan.py " + str(mainwidth - 1) + " " + str(mainheight - 1), shell = True)
