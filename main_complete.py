@@ -119,11 +119,49 @@ def get_coord(gate, grid):
         if i[0] == gate:
             return (i[1], i[2], 0)
 
-# Out of bounds functie.
-def out_of_bounds(x, y, z, width, height, n_layers):
-    if x < 0 or x >= width or y < 0 or y >= height or z < 0 or z >= n_layers:
-        return True
-    return False
+# # Out of bounds functie.
+# def out_of_bounds(x, y, z, width, height, n_layers):
+#     if x < 0 or x >= width or y < 0 or y >= height or z < 0 or z >= n_layers:
+#         return True
+#     return False
+
+# Bepaalt of een coordinaat op de chip zit
+def on_chip(coord):
+    x, y, z = coord
+    if x < 0 or x >= mainchip.width or y < 0 or y >= mainchip.height or z < 0 or z >= mainchip.maxlayers:
+        return False
+    return True
+
+def generate_children(coord, obs):
+    x, y, z = coord
+    children = []
+
+    # Noord
+    n_child = (x, y - 1, z)
+    if on_chip(n_child) and n_child not in obs:
+        children.append(n_child)
+    # Oost
+    e_child = (x + 1, y, z)
+    if on_chip(e_child) and e_child not in obs:
+        children.append(e_child)
+    # Zuid
+    s_child = (x, y + 1, z)
+    if on_chip(s_child) and s_child not in obs:
+        children.append(s_child)
+    # West
+    w_child = (x - 1, y, z)
+    if on_chip(w_child) and w_child not in obs:
+        children.append(w_child)
+    # Up
+    u_child = (x, y, z + 1)
+    if on_chip(u_child) and u_child not in obs:
+        children.append(u_child)
+    # Down
+    d_child = (x, y, z - 1)
+    if on_chip(d_child) and d_child not in obs:
+        children.append(d_child)
+
+    return children
 
 def Astar(startgate, goalgate, chip, netlist):
     # Initialiseer een open list.
@@ -159,25 +197,25 @@ def Astar(startgate, goalgate, chip, netlist):
             return path
 
         # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q.
-        children = []
-        # North child
-        if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_filtered:
-            children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
-        # East child
-        if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
-            children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
-        # South child
-        if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_filtered:
-            children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
-        # West child
-        if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
-            children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
-        # Up child
-        if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_filtered:
-            children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
-        # Down child
-        if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_filtered:
-            children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
+        children = generate_children(q["node"], obstacles_filtered)
+        # # North child
+        # if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_filtered:
+        #     children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
+        # # East child
+        # if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
+        #     children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
+        # # South child
+        # if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_filtered:
+        #     children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
+        # # West child
+        # if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
+        #     children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
+        # # Up child
+        # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_filtered:
+        #     children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
+        # # Down child
+        # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_filtered:
+        #     children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
         if len(children) > 0:
             for child in children:
                 if child in [d["node"] for d in closed_list]:
@@ -192,26 +230,27 @@ def Astar(startgate, goalgate, chip, netlist):
                     G = q["G"] + 1
                     F = G + manhattan(child, goal)
                     open_list.append({"node": child, "G": G, "F": F, "parent": q})
-        if not open_list:
+        else:
             # Genereer toch kinderen, maar dan zonder obstakelcheck, behalve als het een gate is.
-            # North child.
-            if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_gate_only:
-                children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
-            # East child.
-            if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
-                children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
-            # South child.
-            if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_gate_only:
-                children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
-            # West child.
-            if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
-                children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
-            # Up child.
-            if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_gate_only:
-                children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
-            # Down child.
-            if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_gate_only:
-                children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
+            children = generate_children(q["node"], obstacles_gate_only)
+            # # North child.
+            # if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_gate_only:
+            #     children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
+            # # East child.
+            # if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
+            #     children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
+            # # South child.
+            # if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_gate_only:
+            #     children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
+            # # West child.
+            # if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
+            #     children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
+            # # Up child.
+            # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_gate_only:
+            #     children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
+            # # Down child.
+            # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_gate_only:
+            #     children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
             # Kies een kind.
             baby = min(children, key = lambda x: manhattan(x, goal))
             # verwijder het obstakel (verwijder het HELE draad).
@@ -233,7 +272,7 @@ def Astar(startgate, goalgate, chip, netlist):
             F = G + manhattan(baby, goal)
             open_list.append({"node": baby, "G": G, "F": F, "parent": q})
 
-            # Voeg de verwijderde draden weer toe.
+            # # Voeg de verwijderde draden weer toe.
             # for i in range(len(paths)):
             #     if paths[i] == "verwijderd":
             #         paths[i] = Astar(netlist[i][0] + 1, netlist[i][1] + 1, chip, netlist)
