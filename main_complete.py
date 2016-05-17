@@ -2,7 +2,12 @@
 ##
 # Chips & Circuits
 # Team Paprikachips
-# Programma om de ondergrens te berekenen.
+#
+# Script voor het Chips & Circuits project, waarbij verschillende gates aan de
+# hand van netlists met elkaar verbonden moeten worden. Hierbij wordt
+# gebruikgemaakt van het A-star algoritme, wat het kortste pad tussen twee
+# punten vindt.
+#
 # Bron: http://web.mit.edu/eranki/www/tutorials/search/
 # Bron: http://www.redblobgames.com/pathfinding/a-star/implementation.html
 # Bron: https://gist.github.com/jamiees2/5531924
@@ -17,16 +22,19 @@ import subprocess
 # Importeer de grids en netlists uit externe file grid_info.
 import grid_info
 
+# De breedte van elk grid is altijd 18
 mainwidth = 18
 
 ##############
 # User input #
 ##############
+# Prompts en error berichten bij verkeerde input
 netlistprompt = "Which netlist (1-6)? > "
 sortprompt = "Would you like to sort the initial netlist (Y/N)? >"
 error_wrong_input = "Please enter a number (1-6)"
 error_wrong_sort = "Please enter either Y or N"
 
+# Verkrijg user input
 while True:
     rawnetlist = raw_input(netlistprompt)
     try:
@@ -35,10 +43,12 @@ while True:
         print error_wrong_input
         sys.exit(1)
     else:
+        # Check of een getal tussen 1 en 6 is ingevuld
         if netlistnum < 1 or netlistnum > 6:
             print error_wrong_input
             sys.exit(1)
 
+        # Bepaal de lengte van een grid adhv het netlistnummer
         if netlistnum <= 3:
             maingrid = grid_info.grid1
             mainheight = 13
@@ -46,6 +56,9 @@ while True:
             maingrid = grid_info.grid2
             mainheight = 17
 
+
+        # Maak een variabele adhv het netlistnummer en lees die variabele in uit
+        # grid_info
         mainnetlist = getattr(grid_info, "netlist_" + str(netlistnum))
         break
 
@@ -53,6 +66,8 @@ while True:
 # Initiele sort #
 #################
 while True:
+    # Vraag de user of hij de initiele netlist gesorteerd wil hebben op
+    # manhattan distance
     initial_sort = raw_input(sortprompt).upper()
     if initial_sort == "Y" or initial_sort == "N":
         break
@@ -74,21 +89,12 @@ class Chip(object):
             name, x, y = gate
             self.layers[0][y][x] = name
             self.obstacles.append((x, y, 0))
-    # Functie om de gates aan de chip toe te voegen.
-    def add_gate(self, gate, x, y, z = 0):
-        if (x, y, z) in self.obstacles:
-            print "Obstacle detected. Adding gate aborted."
-        else:
-            self.layers[z][y][x] = gate
-            self.obstacles.append((x, y, z))
     # Functie om alle lagen te laten printen.
     def print_grid(self):
         for i in range(len(self.layers)):
             print "Layer %d" % (i + 1)
             for row in self.layers[i]:
                 print row
-    def print_obstacles(self):
-        print self.obstacles
     def reset(self):
         self.wires = []
         self.obstacles = []
@@ -119,12 +125,6 @@ def get_coord(gate, grid):
         if i[0] == gate:
             return (i[1], i[2], 0)
 
-# # Out of bounds functie.
-# def out_of_bounds(x, y, z, width, height, n_layers):
-#     if x < 0 or x >= width or y < 0 or y >= height or z < 0 or z >= n_layers:
-#         return True
-#     return False
-
 # Bepaalt of een coordinaat op de chip zit
 def on_chip(coord):
     x, y, z = coord
@@ -132,10 +132,13 @@ def on_chip(coord):
         return False
     return True
 
+# Maak kindjes adhv een coordinaat op de chip
 def generate_children(coord, obs):
     x, y, z = coord
     children = []
 
+    # Bepaal voor elke richting of het kind op de chip zit en of er geen
+    # obstakel in de weg zit
     # Noord
     n_child = (x, y - 1, z)
     if on_chip(n_child) and n_child not in obs:
@@ -175,6 +178,8 @@ def Astar(startgate, goalgate, chip, netlist):
     goal = get_coord(goalgate, grid)
     open_list.append(start)
 
+    # Maak obstakellists aan voor alles, exclusief de doelcoordinaat, en alleen
+    # voor de gates
     obstacles = chip.obstacles
     obstacles_filtered = [x for x in obstacles if x != goal]
     obstacles_gate_only = [x for x in obstacles if x != goal and chip.layers[x[2]][x[1]][x[0]] != 0]
@@ -198,24 +203,6 @@ def Astar(startgate, goalgate, chip, netlist):
 
         # Genereer de (6, n/e/s/w/u/d) children van q en zet hun parent op q.
         children = generate_children(q["node"], obstacles_filtered)
-        # # North child
-        # if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_filtered:
-        #     children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
-        # # East child
-        # if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
-        #     children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
-        # # South child
-        # if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_filtered:
-        #     children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
-        # # West child
-        # if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_filtered:
-        #     children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
-        # # Up child
-        # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_filtered:
-        #     children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
-        # # Down child
-        # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_filtered:
-        #     children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
         if len(children) > 0:
             for child in children:
                 if child in [d["node"] for d in closed_list]:
@@ -233,24 +220,6 @@ def Astar(startgate, goalgate, chip, netlist):
         else:
             # Genereer toch kinderen, maar dan zonder obstakelcheck, behalve als het een gate is.
             children = generate_children(q["node"], obstacles_gate_only)
-            # # North child.
-            # if not out_of_bounds(q["node"][0], q["node"][1] - 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] - 1, q["node"][2]) not in obstacles_gate_only:
-            #     children.append((q["node"][0], q["node"][1] - 1, q["node"][2]))
-            # # East child.
-            # if not out_of_bounds(q["node"][0] + 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] + 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
-            #     children.append((q["node"][0] + 1, q["node"][1], q["node"][2]))
-            # # South child.
-            # if not out_of_bounds(q["node"][0], q["node"][1] + 1, q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1] + 1, q["node"][2]) not in obstacles_gate_only:
-            #     children.append((q["node"][0], q["node"][1] + 1, q["node"][2]))
-            # # West child.
-            # if not out_of_bounds(q["node"][0] - 1, q["node"][1], q["node"][2], chip.width, chip.height, chip.maxlayers) and (q["node"][0] - 1, q["node"][1], q["node"][2]) not in obstacles_gate_only:
-            #     children.append((q["node"][0] - 1, q["node"][1], q["node"][2]))
-            # # Up child.
-            # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] + 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] + 1) not in obstacles_gate_only:
-            #     children.append((q["node"][0], q["node"][1], q["node"][2] + 1))
-            # # Down child.
-            # if not out_of_bounds(q["node"][0], q["node"][1], q["node"][2] - 1, chip.width, chip.height, chip.maxlayers) and (q["node"][0], q["node"][1], q["node"][2] - 1) not in obstacles_gate_only:
-            #     children.append((q["node"][0], q["node"][1], q["node"][2] - 1))
             # Kies een kind.
             baby = min(children, key = lambda x: manhattan(x, goal))
             # verwijder het obstakel (verwijder het HELE draad).
@@ -272,34 +241,41 @@ def Astar(startgate, goalgate, chip, netlist):
             F = G + manhattan(baby, goal)
             open_list.append({"node": baby, "G": G, "F": F, "parent": q})
 
-            # # Voeg de verwijderde draden weer toe.
-            # for i in range(len(paths)):
-            #     if paths[i] == "verwijderd":
-            #         paths[i] = Astar(netlist[i][0] + 1, netlist[i][1] + 1, chip, netlist)
-
     return []
 
+# Het maximum aantal iteraties dat we willen doen om de netlist op te lossen
 max_iterations = 1000
 
+# Sorteer de initiele netlist als de user dat heeft aangegeven
 if initial_sort == "Y":
     mainnetlist = sorted(mainnetlist, key = lambda i: manhattan(get_coord(i[0] + 1, maingrid), get_coord(i[1] + 1, maingrid)))
+# Anders hussel hem willekeurig
 else:
     random.shuffle(mainnetlist)
 
+# Probeer de gehele netlist op te lossen met A-star
 iteration = 0
 paths = []
+# Zolang niet alle paden gevonden zijn en het maximum aantal iteraties niet
+# bereikt is
 while len(paths) < len(mainnetlist) and iteration < max_iterations:
+    # Reset de chip: alleen de gates zijn de obstakels in het begin
     mainchip.reset()
     paths = []
     iteration += 1
     print "Running iteration %d..." % iteration
+    # Pas A-star toe op elk paar in de netlist
     for i in mainnetlist:
         path = Astar(i[0] + 1, i[1] + 1, mainchip, mainnetlist)
+        # Als de lengte van het pad langer is dan 0, append hem dan en anders
+        # break (geen pad kunnen vinden)
         if len(path) > 0:
             paths.append(path)
         else:
             break
 
+    # Als de lengte van de padenlijst net zo lang is als de lengte van de
+    # netlist, check of er paden verwijderd zijn en leg die opnieuw aan
     if len(paths) == len(mainnetlist):
         its = 0
         while any(i == "verwijderd" for i in paths) and its < 200:
@@ -313,13 +289,15 @@ while len(paths) < len(mainnetlist) and iteration < max_iterations:
             random.shuffle(paths)
 
     random.shuffle(mainnetlist)
-    if any(i == "verwijderd" for i in paths):
-        continue
 
 print "Netlist", netlistnum
+# Als de lengte van de padenlijst korter is dan de lengte van de netlist, dan
+# zijn niet alle paden gevonden
 if len(paths) < len(mainnetlist):
     print "Could not find a complete solution in %d iterations" % max_iterations
     print "Try to find the maximum amount of connections instead"
+# Als ze even lang zijn, zijn de paden gevonden. Laat dan de visualisatie
+# automatisch zien
 else:
     mainchip.wires = paths[:]
     maincost = 0
