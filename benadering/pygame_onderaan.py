@@ -31,6 +31,11 @@ block_size = 22
 grid_font_size = 9
 current_layer = 0
 node_size = 8
+max_layer = 0
+for path in solution:
+    for i in range(len(path)):
+        if path[i][2] > max_layer:
+            max_layer = path[i][2]
 
 block_am_x = int(sys.argv[1]) #17 #17
 block_am_y = int(sys.argv[2]) #12 #16
@@ -133,7 +138,7 @@ while not exit:
     def button_pressed():
         global current_layer
         # Als "Next layer" wordt geklikt.
-        if current_layer == 7:
+        if current_layer == max_layer:
             pass
         else:
             if distance(pygame.mouse.get_pos(), (65, banner_top + line_length_vert + 20)) < 14:
